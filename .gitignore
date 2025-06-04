@@ -1,0 +1,38 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# VS Code settings
+.vscode/
+*.vsidx
+.vs/
+
+
+# ASP.NET Core secrets
+secrets.json
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# App settings (ẩn tất cả appsettings.*.json)
+appsettings.json
+appsettings.*.json
+
+# Publish output
+wwwroot/
+publish/
+out/
+
+# Others
+.env
