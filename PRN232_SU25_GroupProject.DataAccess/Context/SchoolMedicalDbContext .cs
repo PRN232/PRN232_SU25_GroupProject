@@ -242,26 +242,26 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
                 .HasDefaultValueSql("GETDATE()");
 
             // Seed data
-            SeedData(modelBuilder);
+            //SeedData(modelBuilder);
         }
 
-        private void SeedData(ModelBuilder modelBuilder)
-        {
-            // Seed default medications
-            modelBuilder.Entity<Medication>().HasData(
-                new Medication { Id = 1, Name = "Paracetamol", Type = "Pain Relief", Description = "For fever and pain", StockQuantity = 100, ExpiryDate = DateTime.Now.AddYears(2), StorageInstructions = "Store in cool, dry place" },
-                new Medication { Id = 2, Name = "Ibuprofen", Type = "Anti-inflammatory", Description = "For inflammation and pain", StockQuantity = 50, ExpiryDate = DateTime.Now.AddYears(2), StorageInstructions = "Store in cool, dry place" },
-                new Medication { Id = 3, Name = "Antiseptic Solution", Type = "Topical", Description = "For wound cleaning", StockQuantity = 25, ExpiryDate = DateTime.Now.AddYears(1), StorageInstructions = "Store in cool, dry place" },
-                new Medication { Id = 4, Name = "Bandages", Type = "First Aid", Description = "For wound dressing", StockQuantity = 200, ExpiryDate = DateTime.Now.AddYears(3), StorageInstructions = "Store in dry place" }
-            );
+        //private void SeedData(ModelBuilder modelBuilder)
+        //{
+        //    // Seed default medications
+        //    modelBuilder.Entity<Medication>().HasData(
+        //        new Medication { Id = 1, Name = "Paracetamol", Type = "Pain Relief", Description = "For fever and pain", StockQuantity = 100, ExpiryDate = DateTime.Now.AddYears(2), StorageInstructions = "Store in cool, dry place" },
+        //        new Medication { Id = 2, Name = "Ibuprofen", Type = "Anti-inflammatory", Description = "For inflammation and pain", StockQuantity = 50, ExpiryDate = DateTime.Now.AddYears(2), StorageInstructions = "Store in cool, dry place" },
+        //        new Medication { Id = 3, Name = "Antiseptic Solution", Type = "Topical", Description = "For wound cleaning", StockQuantity = 25, ExpiryDate = DateTime.Now.AddYears(1), StorageInstructions = "Store in cool, dry place" },
+        //        new Medication { Id = 4, Name = "Bandages", Type = "First Aid", Description = "For wound dressing", StockQuantity = 200, ExpiryDate = DateTime.Now.AddYears(3), StorageInstructions = "Store in dry place" }
+        //    );
 
-            // Seed admin user role
-            modelBuilder.Entity<Role>().HasData(
-                new Role { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
-                new Role { Id = 2, Name = "Manager", NormalizedName = "MANAGER" },
-                new Role { Id = 3, Name = "SchoolNurse", NormalizedName = "SCHOOLNURSE" },
-                new Role { Id = 4, Name = "Parent", NormalizedName = "PARENT" }
-            );
-        }
+        //    // Seed admin user role
+        //    modelBuilder.Entity<Role>().HasData(
+        //        new Role { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
+        //        new Role { Id = 2, Name = "Manager", NormalizedName = "MANAGER" },
+        //        new Role { Id = 3, Name = "SchoolNurse", NormalizedName = "SCHOOLNURSE" },
+        //        new Role { Id = 4, Name = "Parent", NormalizedName = "PARENT" }
+        //    );
+        //}
     }
 }
