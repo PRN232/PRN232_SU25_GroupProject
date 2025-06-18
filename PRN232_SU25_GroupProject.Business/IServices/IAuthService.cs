@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
+using PRN232_SU25_GroupProject.DataAccess.DTOs;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
+using PRN232_SU25_GroupProject.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +12,9 @@ namespace PRN232_SU25_GroupProject.Business.IServices
 {
     public interface IAuthService
     {
-        Task<AuthResult> LoginAsync(LoginRequest request);
-        Task<AuthResult> RefreshTokenAsync(string refreshToken);
-        Task LogoutAsync(int userId);
-        Task<bool> ChangePasswordAsync(int userId, ChangePasswordRequest request);
-        Task<bool> ResetPasswordAsync(ResetPasswordRequest request);
-        Task<string> GeneratePasswordResetTokenAsync(string email);
+        Task<LoginResult> LoginAsync(PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication.LoginRequest request);
+        Task<bool> LogoutAsync(int userId);
+        Task<User> GetCurrentUserAsync();
+        Task<bool> ChangePasswordAsync(ChangePasswordRequest request);
     }
 }

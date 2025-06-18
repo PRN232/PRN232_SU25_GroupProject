@@ -1,4 +1,7 @@
-﻿using System;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
+using PRN232_SU25_GroupProject.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +11,10 @@ namespace PRN232_SU25_GroupProject.Business.IServices
 {
     public interface IReportService
     {
-        Task<HealthReportData> GenerateHealthReportAsync(HealthReportRequest request);
-        Task<VaccinationReportData> GenerateVaccinationReportAsync(VaccinationReportRequest request);
-        Task<MedicalEventReportData> GenerateMedicalEventReportAsync(MedicalEventReportRequest request);
-        Task<StudentHealthSummaryReport> GenerateStudentHealthSummaryAsync(int studentId);
-        Task<SchoolHealthOverviewReport> GenerateSchoolHealthOverviewAsync(int schoolId, int year);
-        Task<byte[]> ExportReportToPdfAsync(ReportType reportType, object reportData);
-        Task<byte[]> ExportReportToExcelAsync(ReportType reportType, object reportData);
+        Task<DashboardData> GetDashboardDataAsync(int? userId = null);
+        Task<List<IncidentReport>> GetIncidentReportsAsync(DateTime from, DateTime to);
+        Task<List<VaccinationReport>> GetVaccinationReportsAsync(int campaignId);
+        Task<List<HealthCheckupReport>> GetHealthCheckupReportsAsync(int campaignId);
+        Task<StudentHealthSummary> GetStudentHealthSummaryAsync(int studentId);
     }
-
 }

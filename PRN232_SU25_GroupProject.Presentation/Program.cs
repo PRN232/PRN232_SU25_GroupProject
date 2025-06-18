@@ -7,7 +7,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<SchoolHealthDbContext>(options =>
+builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
@@ -84,7 +84,7 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<SchoolHealthDbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<SchoolMedicalDbContext>();
     context.Database.EnsureCreated();
 }
 

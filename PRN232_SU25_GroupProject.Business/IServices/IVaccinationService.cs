@@ -1,4 +1,7 @@
-﻿using System;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
+using PRN232_SU25_GroupProject.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +11,12 @@ namespace PRN232_SU25_GroupProject.Business.IServices
 {
     public interface IVaccinationService
     {
-        Task<PagedResult<Vaccination>> GetVaccinationsAsync(VaccinationFilterRequest filter);
-        Task<Vaccination> GetVaccinationByIdAsync(int vaccinationId);
-        Task<Vaccination> CreateVaccinationAsync(CreateVaccinationRequest request);
-        Task<Vaccination> UpdateVaccinationAsync(int vaccinationId, UpdateVaccinationRequest request);
-        Task<bool> DeleteVaccinationAsync(int vaccinationId);
-        Task<IEnumerable<Vaccination>> GetVaccinationsByStudentAsync(int studentId);
-        Task<IEnumerable<Vaccination>> GetVaccinationsByCampaignAsync(int campaignId);
-        Task<VaccinationHistory> GetStudentVaccinationHistoryAsync(int studentId);
+        Task<VaccinationCampaign> CreateCampaignAsync(CreateVaccinationCampaignRequest request);
+        Task<List<VaccinationCampaign>> GetActiveCampaignsAsync();
+        Task<bool> SendConsentFormsAsync(int campaignId);
+        Task<bool> SubmitConsentAsync(SubmitConsentRequest request);
+        Task<List<Student>> GetEligibleStudentsAsync(int campaignId);
+        Task<VaccinationRecord> RecordVaccinationAsync(RecordVaccinationRequest request);
+        Task<List<VaccinationRecord>> GetStudentVaccinationHistoryAsync(int studentId);
     }
 }

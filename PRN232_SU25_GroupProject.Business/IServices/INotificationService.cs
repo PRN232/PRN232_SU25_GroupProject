@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PRN232_SU25_GroupProject.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,9 @@ namespace PRN232_SU25_GroupProject.Business.IServices
 {
     public interface INotificationService
     {
-        Task<PagedResult<Notification>> GetNotificationsAsync(int userId, NotificationFilterRequest filter);
-        Task<Notification> CreateNotificationAsync(CreateNotificationRequest request);
-        Task<bool> MarkAsReadAsync(int notificationId);
-        Task<bool> MarkAllAsReadAsync(int userId);
-        Task<bool> DeleteNotificationAsync(int notificationId);
-        Task<int> GetUnreadCountAsync(int userId);
-        Task SendBulkNotificationAsync(BulkNotificationRequest request);
-        Task SendPushNotificationAsync(int userId, PushNotificationRequest request);
+        Task<bool> SendEmailAsync(string to, string subject, string body);
+        Task<bool> SendSMSAsync(string phoneNumber, string message);
+        Task<bool> CreateInAppNotificationAsync(int userId, string message);
+        Task<List<Notification>> GetUserNotificationsAsync(int userId);
     }
 }
