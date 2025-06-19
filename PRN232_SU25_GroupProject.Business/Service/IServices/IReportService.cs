@@ -1,13 +1,9 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
-using PRN232_SU25_GroupProject.DataAccess.Entities;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace PRN232_SU25_GroupProject.Business.IServices
+namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IReportService
     {

@@ -2,7 +2,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.Business.Service.Services;
 using PRN232_SU25_GroupProject.DataAccess.Context;
+using PRN232_SU25_GroupProject.DataAccess.Repositories;
+using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
+using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 using PRN232_SU25_GroupProject.Presentation.Initialization;
 using System.Text;
 
@@ -68,6 +73,11 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 
 var app = builder.Build();

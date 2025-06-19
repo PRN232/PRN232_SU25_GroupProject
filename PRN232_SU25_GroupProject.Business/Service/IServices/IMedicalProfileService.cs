@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PRN232_SU25_GroupProject.Business.IServices
+namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IMedicalProfileService
     {
-        Task<MedicalProfile> GetProfileByStudentIdAsync(int studentId);
+        Task<MedicalProfileDto> GetProfileByStudentIdAsync(int studentId);
         Task<bool> UpdateMedicalProfileAsync(UpdateMedicalProfileRequest request);
         Task<bool> AddAllergyAsync(AddAllergyRequest request);
         Task<bool> AddChronicDiseaseAsync(AddChronicDiseaseRequest request);
