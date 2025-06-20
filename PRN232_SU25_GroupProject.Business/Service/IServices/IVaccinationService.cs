@@ -1,4 +1,5 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.DTOs;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using System;
@@ -11,12 +12,13 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IVaccinationService
     {
-        Task<VaccinationCampaign> CreateCampaignAsync(CreateVaccinationCampaignRequest request);
-        Task<List<VaccinationCampaign>> GetActiveCampaignsAsync();
+        Task<VaccinationCampaignDto> CreateCampaignAsync(CreateVaccinationCampaignRequest request);
+        Task<List<VaccinationCampaignDto>> GetActiveCampaignsAsync();
         Task<bool> SendConsentFormsAsync(int campaignId);
         Task<bool> SubmitConsentAsync(SubmitConsentRequest request);
-        Task<List<Student>> GetEligibleStudentsAsync(int campaignId);
-        Task<VaccinationRecord> RecordVaccinationAsync(RecordVaccinationRequest request);
-        Task<List<VaccinationRecord>> GetStudentVaccinationHistoryAsync(int studentId);
+        Task<List<StudentDto>> GetEligibleStudentsAsync(int campaignId);
+        Task<VaccinationRecordDto> RecordVaccinationAsync(RecordVaccinationRequest request);
+        Task<List<VaccinationRecordDto>> GetStudentVaccinationHistoryAsync(int studentId);
     }
+
 }

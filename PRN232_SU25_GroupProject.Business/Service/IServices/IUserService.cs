@@ -11,10 +11,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IUserService
     {
-        Task<User> CreateUserAsync(CreateUserRequest request);
-        Task<User> GetUserByIdAsync(int id);
-        Task<List<User>> GetUsersByRoleAsync(UserRole role);
+        Task<UserDto> CreateUserAsync(CreateUserRequest request);
+        Task<UserDto> GetUserByIdAsync(int id);
+        Task<List<UserDto>> GetUsersByRoleAsync(UserRole role);
         Task<bool> UpdateUserAsync(UpdateUserRequest request);
         Task<bool> DeactivateUserAsync(int id);
     }
+
 }

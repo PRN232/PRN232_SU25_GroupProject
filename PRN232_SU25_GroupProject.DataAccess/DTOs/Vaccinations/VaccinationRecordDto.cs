@@ -11,6 +11,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
     {
         public int Id { get; set; }
         public int StudentId { get; set; }
+        public string StudentCode { get; set; }
         public string StudentName { get; set; }
         public int CampaignId { get; set; }
         public string CampaignName { get; set; }

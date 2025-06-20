@@ -26,7 +26,9 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             ////////////////////////////////////////////////////
             ///             USER & AUTH MAPPING              ///
             ////////////////////////////////////////////////////
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+    .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
             CreateMap<CreateUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
             CreateMap<LoginRequest, User>().ReverseMap();
@@ -80,7 +82,12 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>();
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
-            CreateMap<StudentMedication, StudentMedicationDto>();
+            CreateMap<SubmitMedicationRequest, StudentMedication>();
+            CreateMap<StudentMedication, StudentMedicationDto>()
+                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
+                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
+                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
+
             CreateMap<SubmitMedicationRequest, StudentMedication>();
             CreateMap<AdministerMedicationRequest, StudentMedication>();
 
