@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PRN232_SU25_GroupProject.Business.Mappings;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.Business.Service.Services;
 using PRN232_SU25_GroupProject.DataAccess.Context;
@@ -9,6 +11,10 @@ using PRN232_SU25_GroupProject.DataAccess.Repositories;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 using PRN232_SU25_GroupProject.Presentation.Initialization;
+using AutoMapper;
+
+
+
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,7 +83,27 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+}, typeof(MappingProfile).Assembly);
+
+
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IParentService, ParentService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IHealthCheckupService, HealthCheckupService>();
+builder.Services.AddScoped<IMedicalIncidentService, MedicalIncidentService>();
+builder.Services.AddScoped<IMedicalProfileService, MedicalProfileService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IStudentMedicationService, StudentMedicationService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVaccinationService, VaccinationService>();
+
+
 
 
 var app = builder.Build();

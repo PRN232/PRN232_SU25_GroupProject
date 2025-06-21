@@ -143,6 +143,10 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
                 ? await _dbSet.CountAsync()
                 : await _dbSet.CountAsync(predicate);
         }
+        public virtual IQueryable<T> Query()
+        {
+            return _dbSet.AsQueryable();
+        }
 
         protected IQueryable<T> ApplyIncludes(IQueryable<T> query, string includeProperties)
         {
