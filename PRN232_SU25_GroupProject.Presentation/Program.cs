@@ -16,12 +16,16 @@ using AutoMapper;
 
 
 using System.Text;
+using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using PRN232_SU25_GroupProject.DataAccess.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddApplicationService();
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
@@ -51,6 +55,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<SchoolMedicalDbContext>()
+    .AddDefaultTokenProviders();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
@@ -80,28 +87,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-}, typeof(MappingProfile).Assembly);
-
-
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IParentService, ParentService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IHealthCheckupService, HealthCheckupService>();
-builder.Services.AddScoped<IMedicalIncidentService, MedicalIncidentService>();
-builder.Services.AddScoped<IMedicalProfileService, MedicalProfileService>();
-builder.Services.AddScoped<IMedicationService, MedicationService>();
-builder.Services.AddScoped<IReportService, ReportService>();
-builder.Services.AddScoped<IStudentMedicationService, StudentMedicationService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 
 
 
