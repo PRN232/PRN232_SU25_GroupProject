@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PRN232_SU25_GroupProject.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class FixUserIdConflict : Migration
+    public partial class V1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

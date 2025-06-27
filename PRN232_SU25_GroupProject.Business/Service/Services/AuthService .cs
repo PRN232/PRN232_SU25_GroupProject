@@ -128,7 +128,6 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             {
                 var parent = await _unitOfWork.GetRepository<Parent>()
                     .Query().FirstOrDefaultAsync(p => p.UserId == user.Id);
-                dto.FullName = parent?.FullName;
                 dto.PhoneNumber = parent?.PhoneNumber;
             }
 

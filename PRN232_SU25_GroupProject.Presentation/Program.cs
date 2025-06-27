@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,12 +11,12 @@ using PRN232_SU25_GroupProject.DataAccess.Repositories;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 using PRN232_SU25_GroupProject.Presentation.Initialization;
+using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
 using AutoMapper;
 
 
 
 using System.Text;
-using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 
@@ -24,7 +24,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddEntityFrameworkStores<SchoolMedicalDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddApplicationService();
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
@@ -55,9 +57,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<SchoolMedicalDbContext>()
-    .AddDefaultTokenProviders();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
@@ -91,6 +90,7 @@ builder.Services.AddCors(options =>
 
 
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -109,9 +109,11 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SchoolMedicalDbContext>();
-    context.Database.Migrate();
-
-    DataSeeder.SeedDatabase(context);
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    context.Database.Migrate(); // áp dụng các migration mới nhất
+    DataSeeder.SeedDatabase(context);                    // seed các bảng
+    await DataSeeder.SeedPasswordsAsync(userManager);    // gán mật khẩu
 }
+
 
 app.Run();

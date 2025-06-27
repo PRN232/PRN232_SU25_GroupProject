@@ -15,7 +15,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Users
         [EmailAddress]
         public string Email { get; set; }
         public bool IsActive { get; set; }
-        public string FullName { get; set; }
+        public string Username { get; set; }
         public string PhoneNumber { get; set; }
     }
 }

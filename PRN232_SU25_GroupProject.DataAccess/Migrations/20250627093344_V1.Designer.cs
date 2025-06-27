@@ -12,8 +12,8 @@ using PRN232_SU25_GroupProject.DataAccess.Context;
 namespace PRN232_SU25_GroupProject.DataAccess.Migrations
 {
     [DbContext(typeof(SchoolMedicalDbContext))]
-    [Migration("20250618082900_FixUserIdConflict")]
-    partial class FixUserIdConflict
+    [Migration("20250627093344_V1")]
+    partial class V1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

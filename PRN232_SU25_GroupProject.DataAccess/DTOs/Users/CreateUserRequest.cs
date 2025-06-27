@@ -24,7 +24,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Users
         [Required]
         public UserRole Role { get; set; }
 
-        public string FullName { get; set; }
         public string PhoneNumber { get; set; }
     }
 }
