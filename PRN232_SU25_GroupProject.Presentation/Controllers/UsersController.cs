@@ -22,6 +22,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// <param name="request">Request payload.</param>
         /// <returns>The created user.</returns>
         [HttpPost]
+
         public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

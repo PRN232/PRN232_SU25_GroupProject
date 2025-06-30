@@ -1,24 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using PRN232_SU25_GroupProject.Business.Mappings;
-using PRN232_SU25_GroupProject.Business.Service.IServices;
-using PRN232_SU25_GroupProject.Business.Service.Services;
 using PRN232_SU25_GroupProject.DataAccess.Context;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
-using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
-using PRN232_SU25_GroupProject.Presentation.Initialization;
-using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
-using AutoMapper;
-
-
-
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
+using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
+using PRN232_SU25_GroupProject.Presentation.Initialization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SMMS API", Version = "v1" });
+    c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme.",
