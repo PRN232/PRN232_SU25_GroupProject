@@ -31,12 +31,12 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             SeedMedicationsGiven(context);       // 9a. Thuốc đã cấp khi sự cố
 
             SeedVaccinationCampaigns(context);   // 10. Chiến dịch tiêm chủng
-            SeedMedicalConsents(context);    // 11. Phiếu đồng ý
             SeedVaccinationRecords(context);
 
             SeedHealthCheckupCampaigns(context); // 12. Chiến dịch khám định kỳ
             SeedHealthCheckupResults(context);   // 13. Kết quả khám
 
+            SeedMedicalConsents(context);    // 11. Phiếu đồng ý
             SeedNotifications(context);          // 14. Thông báo hệ thống
 
             SeedMedicalHistories(context);     // 15. Tiền sử điều trị
