@@ -73,17 +73,16 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.AddAuthorization();
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//    {
-//        policy.AllowAnyOrigin()
-//              .AllowAnyMethod()
-//              .AllowAnyHeader();
-//    });
-//});
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
 {
-    public class VaccinationConsentDto
+    public class MedicalConsentDto
     {
         public int Id { get; set; }
         public int CampaignId { get; set; }

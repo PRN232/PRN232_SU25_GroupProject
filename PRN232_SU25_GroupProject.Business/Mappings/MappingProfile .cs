@@ -97,8 +97,8 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<VaccinationCampaign, VaccinationCampaignDto>();
             CreateMap<CreateVaccinationCampaignRequest, VaccinationCampaign>();
 
-            CreateMap<VaccinationConsent, VaccinationConsentDto>();
-            CreateMap<SubmitConsentRequest, VaccinationConsent>();
+            CreateMap<MedicalConsent, MedicalConsentDto>();
+            CreateMap<SubmitConsentRequest, MedicalConsent>();
 
             CreateMap<VaccinationRecord, VaccinationRecordDto>();
             CreateMap<RecordVaccinationRequest, VaccinationRecord>();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
@@ -16,111 +17,110 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             _healthCheckupService = healthCheckupService;
         }
 
-        // Lấy tất cả các đợt kiểm tra sức khỏe
         [HttpGet("campaigns")]
         [Authorize]
         public async Task<IActionResult> GetAllCampaigns()
         {
-            var result = await _healthCheckupService.GetAllCampaignsAsync();
-            return Ok(result);
+            var response = await _healthCheckupService.GetAllCampaignsAsync();
+            if (!response.Success)
+                return BadRequest(response); // Lỗi hệ thống
+            return Ok(response);
         }
 
-        // Tạo mới 1 đợt kiểm tra sức khỏe
         [HttpPost("campaigns")]
         [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> CreateCampaign([FromBody] CreateCheckupCampaignRequest request)
         {
-            var result = await _healthCheckupService.CreateCampaignAsync(request);
-            return CreatedAtAction(nameof(GetCampaignById), new { id = result.Id }, result);
+            var response = await _healthCheckupService.CreateCampaignAsync(request);
+            if (!response.Success)
+                return BadRequest(response);
+            // Trả về cả ApiResponse và link tới action GetCampaignById
+            return CreatedAtAction(nameof(GetCampaignById), new { id = response.Data.Id }, response);
         }
 
-        // Lấy thông tin đợt kiểm tra theo ID
         [HttpGet("campaigns/{id}")]
         [Authorize]
         public async Task<IActionResult> GetCampaignById(int id)
         {
-            try
-            {
-                var result = await _healthCheckupService.GetCampaignByIdAsync(id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
+            var response = await _healthCheckupService.GetCampaignByIdAsync(id);
+            if (!response.Success)
+                return NotFound(response);
+            return Ok(response);
         }
 
-        // Lấy danh sách học sinh được kiểm tra trong đợt kiểm tra sức khỏe
         [HttpGet("campaigns/{campaignId}/students")]
         [Authorize]
         public async Task<IActionResult> GetScheduledStudents(int campaignId)
         {
-            var result = await _healthCheckupService.GetScheduledStudentsAsync(campaignId);
-            return Ok(result);
+            var response = await _healthCheckupService.GetScheduledStudentsAsync(campaignId);
+            if (!response.Success)
+                return NotFound(response);
+            return Ok(response);
         }
 
-        // Gửi thông báo đến phụ huynh về đợt kiểm tra sức khỏe
         [HttpPost("campaigns/{campaignId}/notify-parents")]
         [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> SendNotificationToParents(int campaignId)
         {
-            var success = await _healthCheckupService.SendNotificationToParentsAsync(campaignId);
-            if (success)
-                return Ok(new { message = "Gửi thông báo thành công!" });
-            return NotFound(new { message = "Không tìm thấy đợt kiểm tra." });
+            var response = await _healthCheckupService.SendNotificationToParentsAsync(campaignId);
+            if (!response.Success)
+                return NotFound(response);
+            return Ok(response);
         }
 
-        // Ghi nhận kết quả kiểm tra sức khỏe cho học sinh
         [HttpPost("results")]
         [Authorize(Roles = "SchoolNurse,Manager")]
         public async Task<IActionResult> RecordCheckupResult([FromBody] RecordCheckupRequest request)
         {
-            var result = await _healthCheckupService.RecordCheckupResultAsync(request);
-            return Ok(result);
+            var response = await _healthCheckupService.RecordCheckupResultAsync(request);
+            if (!response.Success)
+                return BadRequest(response);
+            return Ok(response);
         }
 
-        // Xem lịch sử kiểm tra sức khỏe của một học sinh
         [HttpGet("students/{studentId}/history")]
         [Authorize(Roles = "Parent,SchoolNurse,Manager,Admin")]
         public async Task<IActionResult> GetStudentCheckupHistory(int studentId)
         {
-            // Nếu là parent thì chỉ được xem lịch sử của con mình
-            if (User.IsInRole("Parent"))
-            {
-                string userId = User.Claims.FirstOrDefault(x => x.Type == "sub" || x.Type == "UserId")?.Value;
-                // Lấy student từ DB
-                var student = await _healthCheckupService.GetStudentByIdAsync(studentId);
-                if (student == null || student.ParentId != int.Parse(userId))
-                {
-                    return Forbid("Bạn không có quyền truy cập thông tin này.");
-                }
-            }
+            string userIdStr = User.Claims.FirstOrDefault(x => x.Type == "sub" || x.Type == "uid" || x.Type == "UserId")?.Value;
+            int? userId = null;
+            if (int.TryParse(userIdStr, out var tmpId))
+                userId = tmpId;
+            string role = User.Claims.FirstOrDefault(x =>
+                x.Type == "role" || x.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
 
-            var result = await _healthCheckupService.GetStudentCheckupHistoryAsync(studentId);
-            return Ok(result);
+            var response = await _healthCheckupService.GetStudentCheckupHistoryAsync(studentId, userId, role);
+
+            if (!response.Success)
+            {
+                if (response.Message.Contains("quyền"))
+                    return StatusCode(403, ApiResponse<object>.ErrorResult("Bạn không có quyền truy cập thông tin học sinh này."));
+                if (response.Message.Contains("Không tìm thấy") || response.Message.Contains("chưa có lịch sử"))
+                    return NotFound(response);
+                return BadRequest(response);
+            }
+            return Ok(response);
         }
 
-
-        // Gửi kết quả kiểm tra sức khỏe cho phụ huynh
         [HttpPost("results/{resultId}/send-to-parent")]
         [Authorize(Roles = "SchoolNurse,Manager")]
         public async Task<IActionResult> SendResultToParent(int resultId)
         {
-            var success = await _healthCheckupService.SendResultToParentAsync(resultId);
-            if (success)
-                return Ok(new { message = "Gửi kết quả cho phụ huynh thành công!" });
-            return NotFound(new { message = "Không tìm thấy kết quả kiểm tra hoặc phụ huynh." });
+            var response = await _healthCheckupService.SendResultToParentAsync(resultId);
+            if (!response.Success)
+                return NotFound(response);
+            return Ok(response);
         }
 
-        // Lên lịch hẹn tư vấn (tái khám) cho học sinh nếu có dấu hiệu bất thường
         [HttpPost("results/{resultId}/schedule-followup")]
         [Authorize(Roles = "SchoolNurse,Manager")]
         public async Task<IActionResult> ScheduleFollowup(int resultId, [FromQuery] DateTime appointmentDate)
         {
-            var success = await _healthCheckupService.ScheduleFollowupAsync(resultId, appointmentDate);
-            if (success)
-                return Ok(new { message = "Đã lên lịch hẹn tái khám." });
-            return NotFound(new { message = "Không tìm thấy kết quả kiểm tra." });
+            var response = await _healthCheckupService.ScheduleFollowupAsync(resultId, appointmentDate);
+            if (!response.Success)
+                return NotFound(response);
+            return Ok(response);
         }
     }
+
 }

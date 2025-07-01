@@ -25,6 +25,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repositories
         IGenericRepository<HealthCheckupResult> HealthCheckupResultRepository { get; }
         IGenericRepository<Notification> NotificationRepository { get; }
         IGenericRepository<SchoolNurse> SchoolNurseRepository { get; }
+        IGenericRepository<MedicalConsent> MedicalConsentRepository { get; }
         IStudentRepository StudentRepository { get; }
         IGenericRepository<T> GetRepository<T>() where T : class;
 

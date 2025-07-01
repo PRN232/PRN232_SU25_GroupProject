@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PRN232_SU25_GroupProject.DataAccess.Enums;
+﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Entities
 {
@@ -15,6 +10,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.Entities
         public DateTime ScheduledDate { get; set; }
         public string TargetGrades { get; set; }
         public VaccinationStatus Status { get; set; }
-        public List<VaccinationConsent> Consents { get; set; }
+
     }
 }

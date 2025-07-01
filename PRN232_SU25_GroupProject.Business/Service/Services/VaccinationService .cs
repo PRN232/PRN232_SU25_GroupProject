@@ -45,7 +45,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             var campaignIds = campaigns.Select(c => c.Id).ToList();
 
-            var consents = await _unitOfWork.GetRepository<VaccinationConsent>().Query()
+            var consents = await _unitOfWork.GetRepository<MedicalConsent>().Query()
                 .Where(c => campaignIds.Contains(c.CampaignId))
                 .ToListAsync();
 
@@ -78,12 +78,12 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             foreach (var student in students)
             {
-                var exists = await _unitOfWork.GetRepository<VaccinationConsent>().Query()
+                var exists = await _unitOfWork.GetRepository<MedicalConsent>().Query()
                     .AnyAsync(c => c.CampaignId == campaignId && c.StudentId == student.Id);
 
                 if (!exists)
                 {
-                    var consent = new VaccinationConsent
+                    var consent = new MedicalConsent
                     {
                         CampaignId = campaignId,
                         StudentId = student.Id,
@@ -91,7 +91,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                         ConsentGiven = false,
                         ConsentDate = DateTime.Now
                     };
-                    await _unitOfWork.GetRepository<VaccinationConsent>().AddAsync(consent);
+                    await _unitOfWork.GetRepository<MedicalConsent>().AddAsync(consent);
                 }
             }
 
@@ -101,7 +101,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
         public async Task<bool> SubmitConsentAsync(SubmitConsentRequest request)
         {
-            var consentRepo = _unitOfWork.GetRepository<VaccinationConsent>();
+            var consentRepo = _unitOfWork.GetRepository<MedicalConsent>();
 
             var consent = await consentRepo.Query()
                 .FirstOrDefaultAsync(c => c.CampaignId == request.CampaignId && c.StudentId == request.StudentId);

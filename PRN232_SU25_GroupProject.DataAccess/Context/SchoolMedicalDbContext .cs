@@ -1,12 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Context
 {
@@ -36,7 +30,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
 
         // Vaccination Management
         public DbSet<VaccinationCampaign> VaccinationCampaigns { get; set; }
-        public DbSet<VaccinationConsent> VaccinationConsents { get; set; }
+        public DbSet<MedicalConsent> MedicalConsents { get; set; }
         public DbSet<VaccinationRecord> VaccinationRecords { get; set; }
 
         // Health Checkup Management
@@ -132,17 +126,30 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Vaccination relationships
-            modelBuilder.Entity<VaccinationConsent>()
-                .HasOne<VaccinationCampaign>()
-                .WithMany(vc => vc.Consents)
-                .HasForeignKey(vc => vc.CampaignId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<MedicalConsent>(entity =>
+            {
+                entity.HasKey(x => x.Id);
 
-            modelBuilder.Entity<VaccinationConsent>()
-                .HasOne<Student>()
-                .WithMany()
-                .HasForeignKey(vc => vc.StudentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                entity.Property(x => x.ConsentType)
+                    .HasConversion<string>()
+                    .IsRequired();
+
+                entity.HasOne<Student>()
+                    .WithMany()
+                    .HasForeignKey(x => x.StudentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Parent>()
+                    .WithMany()
+                    .HasForeignKey(x => x.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Không thể set FK chính xác với Campaign nếu dùng 2 bảng khác nhau.
+                // Có thể để CampaignId kiểu int, hoặc nullable cả hai trường nếu muốn (VaccinationCampaignId, HealthCheckupCampaignId).
+
+                // Hoặc nếu muốn rất chặt, dùng Table Per Hierarchy (TPH) hoặc Table Per Type (TPT) cho campaign.
+            });
+
 
             modelBuilder.Entity<VaccinationRecord>()
                 .HasOne<Student>()

@@ -133,7 +133,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Where(s => targetGrades.Contains(s.ClassName))
                 .ToListAsync();
 
-            var consents = await _unitOfWork.GetRepository<VaccinationConsent>()
+            var consents = await _unitOfWork.GetRepository<MedicalConsent>()
                 .Query()
                 .Where(c => c.CampaignId == campaignId && c.ConsentGiven)
                 .ToListAsync();

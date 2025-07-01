@@ -50,7 +50,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repositories
         public IGenericRepository<Notification> NotificationRepository => GetRepository<Notification>();
         public IGenericRepository<SchoolNurse> SchoolNurseRepository => GetRepository<SchoolNurse>();
 
-
+        public IGenericRepository<MedicalConsent> MedicalConsentRepository => GetRepository<MedicalConsent>();
         public IStudentRepository StudentRepository => _studentRepository;
         public async Task<int> SaveChangesAsync()
         {

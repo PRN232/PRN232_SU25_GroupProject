@@ -31,7 +31,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             SeedMedicationsGiven(context);       // 9a. Thuốc đã cấp khi sự cố
 
             SeedVaccinationCampaigns(context);   // 10. Chiến dịch tiêm chủng
-            SeedVaccinationConsents(context);    // 11. Phiếu đồng ý
+            SeedMedicalConsents(context);    // 11. Phiếu đồng ý
             SeedVaccinationRecords(context);
 
             SeedHealthCheckupCampaigns(context); // 12. Chiến dịch khám định kỳ
@@ -305,34 +305,12 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             context.SaveChanges();
         }
 
-        private static void SeedVaccinationConsents(SchoolMedicalDbContext context)
-        {
-            if (context.VaccinationConsents.Any()) return;
-
-            var campaign = context.VaccinationCampaigns.FirstOrDefault();
-            var stu = context.Students.FirstOrDefault();
-            if (campaign == null || stu == null) return;
-
-            var parent = context.Parents.FirstOrDefault(p => p.Id == stu.ParentId);
-            if (parent == null) return;
-
-            context.VaccinationConsents.Add(new VaccinationConsent
-            {
-                CampaignId = campaign.Id,
-                StudentId = stu.Id,
-                ParentId = parent.Id,
-                ConsentGiven = true,
-                ConsentDate = DateTime.Today,
-                ParentSignature = parent.FullName
-            });
-            context.SaveChanges();
-        }
 
         private static void SeedVaccinationRecords(SchoolMedicalDbContext context)
         {
             if (context.VaccinationRecords.Any()) return;
 
-            var consents = context.VaccinationConsents.Take(2).ToList();
+            var consents = context.MedicalConsents.Take(2).ToList();
             var nurse = context.SchoolNurses.FirstOrDefault();
             if (!consents.Any() || nurse == null) return;
 
@@ -348,6 +326,56 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     VaccinationDate = DateTime.Today.AddDays(-1),
                     SideEffects = "Đau cánh tay nhẹ",
                     Result = VaccinationResult.Completed,
+                });
+            }
+
+            context.SaveChanges();
+        }
+        #endregion
+
+        /*──────────────────────────────  CONSENTS  ──────────────────────────────*/
+        #region  CONSENTS
+        private static void SeedMedicalConsents(SchoolMedicalDbContext context)
+        {
+            if (context.MedicalConsents.Any()) return;
+
+            // --- Seed consent cho Vaccine Campaign ---
+            var vaccineCampaign = context.VaccinationCampaigns.FirstOrDefault();
+            var student1 = context.Students.FirstOrDefault(); // STU001
+            var parent1 = context.Parents.FirstOrDefault(p => p.Id == student1.ParentId);
+
+            if (vaccineCampaign != null && student1 != null && parent1 != null)
+            {
+                context.MedicalConsents.Add(new MedicalConsent
+                {
+                    ConsentType = ConsentType.Vaccine,
+                    CampaignId = vaccineCampaign.Id,
+                    StudentId = student1.Id,
+                    ParentId = parent1.Id,
+                    ConsentGiven = true,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parent1.FullName,
+                    Note = "Đồng ý tiêm chủng"
+                });
+            }
+
+            // --- Seed consent cho Health Checkup Campaign ---
+            var checkupCampaign = context.HealthCheckupCampaigns.FirstOrDefault();
+            var student2 = context.Students.Skip(1).FirstOrDefault(); // STU002
+            var parent2 = context.Parents.FirstOrDefault(p => p.Id == student2.ParentId);
+
+            if (checkupCampaign != null && student2 != null && parent2 != null)
+            {
+                context.MedicalConsents.Add(new MedicalConsent
+                {
+                    ConsentType = ConsentType.HealthCheckup,
+                    CampaignId = checkupCampaign.Id,
+                    StudentId = student2.Id,
+                    ParentId = parent2.Id,
+                    ConsentGiven = true,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parent2.FullName,
+                    Note = "Đồng ý khám sức khỏe định kỳ"
                 });
             }
 
