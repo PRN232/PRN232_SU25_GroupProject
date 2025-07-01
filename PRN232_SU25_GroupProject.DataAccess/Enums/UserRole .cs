@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Enums
 {
-    public enum UserRole { Student, Parent, SchoolNurse, Manager, Admin }
+    public enum UserRole { Parent, SchoolNurse, Manager, Admin }
 }

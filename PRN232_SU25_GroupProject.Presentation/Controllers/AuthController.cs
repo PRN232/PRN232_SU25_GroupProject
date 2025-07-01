@@ -63,6 +63,10 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> GetProfile()
         {
+
+            foreach (var c in User.Claims)
+                Console.WriteLine($"{c.Type}: {c.Value}");
+
             var user = await _authService.GetCurrentUserAsync();
             if (user == null)
                 return Unauthorized();

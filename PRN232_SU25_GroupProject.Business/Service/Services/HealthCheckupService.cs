@@ -5,10 +5,6 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -148,6 +144,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             await _unitOfWork.SaveChangesAsync();
 
             return true;
+        }
+        public async Task<StudentDto> GetStudentByIdAsync(int studentId)
+        {
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(studentId);
+            return _mapper.Map<StudentDto>(student);
         }
     }
 }

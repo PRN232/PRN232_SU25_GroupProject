@@ -10,12 +10,9 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
 using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -58,7 +55,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             // Tạo token
             var token = GenerateJwtToken(user, out DateTime expiresAt);
-
+            Console.WriteLine($"tạo token thành công : {token}");
             // Lấy thông tin chi tiết người dùng (tùy theo role)
             var userDto = await BuildUserDtoAsync(user);
 
@@ -79,7 +76,9 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
         public async Task<User> GetCurrentUserAsync()
         {
+            Console.WriteLine($"_httpContextAccessor.HttpContext.User =" + _httpContextAccessor.HttpContext.User);
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            Console.WriteLine($"Current User ID: {userId}");
             if (int.TryParse(userId, out int id))
                 return await _userManager.FindByIdAsync(userId);
             return null;
@@ -97,27 +96,35 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
         private string GenerateJwtToken(User user, out DateTime expiresAt)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var jwtSection = _configuration.GetSection("JwtSettings");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            expiresAt = DateTime.UtcNow.AddHours(3);
+            expiresAt = DateTime.Now.AddHours(20);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id.ToString())
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, user.Role.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim("uid", user.Id.ToString())
+    };
+
+            var issuer = jwtSection["Issuer"];
+            var audience = jwtSection["Audience"];
+            Console.WriteLine($"issuer: {issuer}");
+            Console.WriteLine($"audience: {audience}");
+            Console.WriteLine($"keyD: {jwtSection["SecretKey"]}");
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
                 expires: expiresAt,
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         private async Task<UserDto> BuildUserDtoAsync(User user)
         {
