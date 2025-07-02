@@ -13,10 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Initialization\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\PRN232_SU25_GroupProject.Business\PRN232_SU25_GroupProject.Business.csproj">
 			<Private>True</Private>
 		</ProjectReference>
