@@ -5,6 +5,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
+using PRN232_SU25_GroupProject.DataAccess.Enums;
 using PRN232_SU25_GroupProject.DataAccess.Repositories;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
@@ -23,10 +24,38 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
         // 1. Lấy tất cả chiến dịch
         public async Task<ApiResponse<List<HealthCheckupCampaignDto>>> GetAllCampaignsAsync()
         {
-            var repo = _unitOfWork.HealthCheckupCampaignRepository;
-            var campaigns = await repo.GetAllAsync();
-            var data = _mapper.Map<List<HealthCheckupCampaignDto>>(campaigns);
-            return ApiResponse<List<HealthCheckupCampaignDto>>.SuccessResult(data, "Lấy danh sách chiến dịch thành công.");
+            var campaigns = await _unitOfWork.HealthCheckupCampaignRepository.GetAllAsync();
+
+            var results = await _unitOfWork.HealthCheckupResultRepository.GetAllAsync();
+            var healthconsents = await _unitOfWork.MedicalConsentRepository
+    .Query()
+    .Where(s => s.ConsentType == ConsentType.HealthCheckup)
+    .ToListAsync();
+            var trueconsents = healthconsents.Where(s => s.ConsentGiven == true);
+
+
+            var dtos = campaigns.Select(c =>
+            {
+                var totalStudents = trueconsents.Count(s => s.CampaignId == c.Id);
+                var campaignResults = results.Where(r => r.CampaignId == c.Id).ToList();
+                var completed = campaignResults.Count;
+                var needFollowup = campaignResults.Count(r => r.RequiresFollowup);
+
+                return new HealthCheckupCampaignDto
+                {
+                    Id = c.Id,
+                    CampaignName = c.CampaignName,
+                    CheckupTypes = c.CheckupTypes,
+                    ScheduledDate = c.ScheduledDate,
+                    TargetGrades = c.TargetGrades,
+                    Status = c.Status,
+                    TotalStudents = totalStudents,
+                    CheckupsCompleted = completed,
+                    RequiringFollowup = needFollowup,
+                    // CompletionRate tự tính từ TotalStudents/CheckupsCompleted
+                };
+            }).ToList();
+            return ApiResponse<List<HealthCheckupCampaignDto>>.SuccessResult(dtos, "Lấy danh sách chiến dịch thành công.");
         }
 
         // 2. Tạo chiến dịch mới
@@ -49,7 +78,25 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             var campaign = await _unitOfWork.HealthCheckupCampaignRepository.GetByIdAsync(id);
             if (campaign == null)
                 return ApiResponse<HealthCheckupCampaignDto>.ErrorResult("Không tìm thấy chiến dịch.");
-            var data = _mapper.Map<HealthCheckupCampaignDto>(campaign);
+            var results = await _unitOfWork.HealthCheckupResultRepository.GetAllAsync();
+            var healthconsents = await _unitOfWork.MedicalConsentRepository
+    .Query()
+    .Where(s => s.ConsentType == ConsentType.HealthCheckup && s.ConsentGiven == true)
+    .ToListAsync();
+            var totalstudent = healthconsents.Count(s => s.CampaignId == campaign.Id);
+            var completed = results.Count(r => r.CampaignId == campaign.Id);
+            var data = new HealthCheckupCampaignDto
+            {
+                Id = campaign.Id,
+                CampaignName = campaign.CampaignName,
+                CheckupTypes = campaign.CheckupTypes,
+                ScheduledDate = campaign.ScheduledDate,
+                TargetGrades = campaign.TargetGrades,
+                Status = campaign.Status,
+                TotalStudents = totalstudent,
+                CheckupsCompleted = completed,
+                RequiringFollowup = results.Count(r => r.CampaignId == campaign.Id && r.RequiresFollowup),
+            };
             return ApiResponse<HealthCheckupCampaignDto>.SuccessResult(data);
         }
 

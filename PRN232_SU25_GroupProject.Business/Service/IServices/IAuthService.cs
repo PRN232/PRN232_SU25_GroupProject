@@ -1,20 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using PRN232_SU25_GroupProject.DataAccess.DTOs;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
-using PRN232_SU25_GroupProject.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IAuthService
     {
-        Task<LoginResult> LoginAsync(PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication.LoginRequest request);
-        Task<bool> LogoutAsync(int userId);
-        Task<User> GetCurrentUserAsync();
-        Task<bool> ChangePasswordAsync(ChangePasswordRequest request);
+        Task<ApiResponse<LoginResult>> LoginAsync(PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication.LoginRequest request);
+        Task<ApiResponse<bool>> LogoutAsync(int userId);
+        Task<ApiResponse<UserDto>> GetCurrentUserAsync();
+        Task<ApiResponse<bool>> ChangePasswordAsync(ChangePasswordRequest request);
+        Task<ApiResponse<LoginResult>> RegisterParentAsync(RegisterParentRequest request);
     }
 }

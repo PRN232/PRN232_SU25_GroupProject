@@ -1,15 +1,15 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IStudentService
     {
-        Task<StudentDto> CreateStudentAsync(CreateStudentRequest request);
-        Task<StudentDto> GetStudentByIdAsync(int id);
-        Task<List<StudentDto>> GetStudentsByClassAsync(string className);
-        Task<List<StudentDto>> GetStudentsByParentAsync(int parentId);
-        Task<bool> UpdateStudentAsync(UpdateStudentRequest request);
+        Task<ApiResponse<StudentDto>> CreateStudentAsync(CreateStudentRequest request);
+        Task<ApiResponse<StudentDto>> GetStudentByIdAsync(int id);
+        Task<ApiResponse<List<StudentDto>>> GetStudentsByClassAsync(string className);
+        Task<ApiResponse<List<StudentDto>>> GetStudentsByParentAsync(int parentId);
+        Task<ApiResponse<bool>> UpdateStudentAsync(UpdateStudentRequest request);
     }
+
 }
