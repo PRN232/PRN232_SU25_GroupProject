@@ -4,6 +4,7 @@ using PRN232_SU25_GroupProject.DataAccess.Entities;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Context
 {
+#pragma warning disable CS1591
     public class SchoolMedicalDbContext : IdentityDbContext<User, Role, int>
     {
         public SchoolMedicalDbContext(DbContextOptions<SchoolMedicalDbContext> options) : base(options) { }
@@ -253,4 +254,5 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
 
 
     }
+#pragma warning restore CS1591
 }

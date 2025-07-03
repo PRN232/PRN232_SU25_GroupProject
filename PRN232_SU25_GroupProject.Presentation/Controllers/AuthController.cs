@@ -27,17 +27,6 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPost("logout")]
-        [Authorize]
-        public async Task<IActionResult> Logout()
-        {
-            var userIdStr = User.Claims.FirstOrDefault(x => x.Type == "sub" || x.Type == "uid" || x.Type == "UserId")?.Value;
-            if (!int.TryParse(userIdStr, out int userId))
-                return Unauthorized(ApiResponse<bool>.ErrorResult("Không xác thực được người dùng."));
-            var response = await _authService.LogoutAsync(userId);
-            if (!response.Success) return BadRequest(response);
-            return Ok(response);
-        }
 
         [HttpGet("me")]
         [Authorize]

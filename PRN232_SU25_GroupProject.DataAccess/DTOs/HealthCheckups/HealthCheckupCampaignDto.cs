@@ -9,6 +9,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups
 {
     public class HealthCheckupCampaignDto
     {
+        public HealthCheckupCampaignDto() {}
         public int Id { get; set; }
         public string CampaignName { get; set; }
         public string CheckupTypes { get; set; }

@@ -11,11 +11,6 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.Business.Mappings
 {
@@ -107,16 +102,20 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             ///           HEALTH CHECKUP MAPPING             ///
             ////////////////////////////////////////////////////
             CreateMap<CreateCheckupCampaignRequest, HealthCheckupCampaign>();
+            CreateMap<UpdateCheckupCampaignRequest, HealthCheckupCampaign>();
             CreateMap<HealthCheckupCampaign, HealthCheckupCampaignDto>();
+            
 
             CreateMap<RecordCheckupRequest, HealthCheckupResult>();
+            
+            CreateMap<UpdateCheckupResultRequest, HealthCheckupResult>();
             CreateMap<HealthCheckupResult, HealthCheckupResultDto>()
                 .ForMember(dest => dest.StudentName, opt => opt.Ignore())
                 .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
                 .ForMember(dest => dest.CampaignName, opt => opt.Ignore())
                 .ForMember(dest => dest.NurseName, opt => opt.Ignore());
 
-
+            
             ////////////////////////////////////////////////////
             ///           NOTIFICATION MAPPING               ///
             ////////////////////////////////////////////////////

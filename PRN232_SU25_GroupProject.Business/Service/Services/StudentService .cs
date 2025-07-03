@@ -21,9 +21,21 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
         public async Task<ApiResponse<StudentDto>> CreateStudentAsync(CreateStudentRequest request)
         {
+
             var student = _mapper.Map<Student>(request);
             await _unitOfWork.StudentRepository.AddAsync(student);
             await _unitOfWork.SaveChangesAsync();
+
+
+            var medicalProfile = new MedicalProfile
+            {
+                StudentId = student.Id,
+                LastUpdated = DateTime.UtcNow,
+
+            };
+            await _unitOfWork.GetRepository<MedicalProfile>().AddAsync(medicalProfile);
+            await _unitOfWork.SaveChangesAsync();
+
 
             var studentWithRelations = await _unitOfWork.StudentRepository
                 .Query()
@@ -36,6 +48,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             return ApiResponse<StudentDto>.SuccessResult(_mapper.Map<StudentDto>(studentWithRelations), "Tạo học sinh thành công.");
         }
+
 
         public async Task<ApiResponse<StudentDto>> GetStudentByIdAsync(int id)
         {

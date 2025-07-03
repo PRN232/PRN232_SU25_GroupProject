@@ -63,11 +63,6 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             }, "Đăng nhập thành công.");
         }
 
-        public async Task<ApiResponse<bool>> LogoutAsync(int userId)
-        {
-            await _signInManager.SignOutAsync();
-            return ApiResponse<bool>.SuccessResult(true, "Đăng xuất thành công.");
-        }
 
         public async Task<ApiResponse<UserDto>> GetCurrentUserAsync()
         {

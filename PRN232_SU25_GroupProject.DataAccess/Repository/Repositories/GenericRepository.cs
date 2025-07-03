@@ -2,11 +2,7 @@
 using PRN232_SU25_GroupProject.DataAccess.Context;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
 {
@@ -135,6 +131,10 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
         public virtual void RemoveRange(IEnumerable<T> entities)
         {
             _dbSet.RemoveRange(entities);
+        }
+        public virtual void Delete(T entity)
+        {
+            _dbSet.Remove(entity);
         }
 
         public virtual async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces
 {
@@ -29,6 +24,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces
         void Update(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+        void Delete(T entity);
 
         IQueryable<T> Query();
         Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
