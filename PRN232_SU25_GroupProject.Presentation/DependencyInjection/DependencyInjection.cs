@@ -44,6 +44,12 @@ namespace PRN232_SU25_GroupProject.Presentation.DependencyInjection
             services.AddScoped<IStudentMedicationService, StudentMedicationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IVaccinationService, VaccinationService>();
+            services.AddScoped<IMedicalHistoryService, MedicalHistoryService>();
+            services.AddScoped<IChronicDiseaseService, ChronicDiseaseService>();
+            services.AddScoped<IAllergyService, AllergyService>();
+            services.AddScoped<IVaccinationCampaignService, VaccinationCampaignService>();
+            services.AddScoped<IVaccinationRecordService, VaccinationRecordService>();
+
 
 
 
