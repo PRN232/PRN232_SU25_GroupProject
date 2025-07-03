@@ -582,7 +582,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             IncidentAndTreatmentSeeder.SeedMedicalIncidents(context);
             IncidentAndTreatmentSeeder.SeedMedicationsGiven(context);
             VaccinationSeeder.SeedVaccinationCampaigns(context);
-            // Note: SeedMedicalConsents is missing; add it here if implemented
+            ConsentSeeder.SeedMedicalConsents(context);
             VaccinationSeeder.SeedVaccinationRecords(context);
             HealthCheckupSeeder.SeedHealthCheckupCampaigns(context);
             HealthCheckupSeeder.SeedHealthCheckupResults(context);

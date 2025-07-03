@@ -95,6 +95,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -108,6 +109,5 @@ using (var scope = app.Services.CreateScope())
     DataSeeder.SeedDatabase(context);                    // seed các bảng
     await DataSeeder.SeedPasswordsAsync(userManager);    // gán mật khẩu
 }
-
 
 app.Run();
