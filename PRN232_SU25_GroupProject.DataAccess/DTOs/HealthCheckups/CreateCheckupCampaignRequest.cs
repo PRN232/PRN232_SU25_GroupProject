@@ -21,6 +21,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups
         [Required]
         public string TargetGrades { get; set; }
 
-        public string Description { get; set; }
+
     }
 }

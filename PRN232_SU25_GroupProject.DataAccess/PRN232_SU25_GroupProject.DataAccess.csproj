@@ -28,7 +28,6 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.1" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="DTOs\HealthCheckups\" />
 		<Folder Include="DTOs\Users\" />
 	</ItemGroup>
 

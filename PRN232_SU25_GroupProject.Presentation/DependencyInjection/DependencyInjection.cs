@@ -35,7 +35,8 @@ namespace PRN232_SU25_GroupProject.Presentation.DependencyInjection
             services.AddScoped<IParentService, ParentService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IHealthCheckupService, HealthCheckupService>();
+            services.AddScoped<IHealthCheckupCampaignService, HealthCheckupCampaignService>();
+            services.AddScoped<IHealthCheckupResultService, HealthCheckupResultService>();
             services.AddScoped<IMedicalIncidentService, MedicalIncidentService>();
             services.AddScoped<IMedicalProfileService, MedicalProfileService>();
             services.AddScoped<IMedicationService, MedicationService>();

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
@@ -41,57 +42,113 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<LoginResult> LoginAsync(LoginRequest request)
+        public async Task<ApiResponse<LoginResult>> LoginAsync(LoginRequest request)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-
             if (user == null || !user.IsActive)
-                return new LoginResult { Success = false, ErrorMessage = "Tài khoản không tồn tại hoặc đã bị vô hiệu hóa." };
+                return ApiResponse<LoginResult>.ErrorResult("Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
             if (!result.Succeeded)
-                return new LoginResult { Success = false, ErrorMessage = "Sai mật khẩu." };
+                return ApiResponse<LoginResult>.ErrorResult("Sai mật khẩu.");
 
-            // Tạo token
             var token = GenerateJwtToken(user, out DateTime expiresAt);
-            Console.WriteLine($"tạo token thành công : {token}");
-            // Lấy thông tin chi tiết người dùng (tùy theo role)
             var userDto = await BuildUserDtoAsync(user);
 
-            return new LoginResult
+            return ApiResponse<LoginResult>.SuccessResult(new LoginResult
             {
                 Success = true,
                 Token = token,
-                User = userDto,
                 ExpiresAt = expiresAt
-            };
+            }, "Đăng nhập thành công.");
         }
 
-        public async Task<bool> LogoutAsync(int userId)
-        {
-            await _signInManager.SignOutAsync();
-            return true;
-        }
 
-        public async Task<User> GetCurrentUserAsync()
+        public async Task<ApiResponse<UserDto>> GetCurrentUserAsync()
         {
-            Console.WriteLine($"_httpContextAccessor.HttpContext.User =" + _httpContextAccessor.HttpContext.User);
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            Console.WriteLine($"Current User ID: {userId}");
             if (int.TryParse(userId, out int id))
-                return await _userManager.FindByIdAsync(userId);
-            return null;
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    var dto = await BuildUserDtoAsync(user);
+                    return ApiResponse<UserDto>.SuccessResult(dto);
+                }
+            }
+            return ApiResponse<UserDto>.ErrorResult("Không xác định được người dùng hiện tại.");
         }
 
-        public async Task<bool> ChangePasswordAsync(ChangePasswordRequest request)
+        public async Task<ApiResponse<bool>> ChangePasswordAsync(ChangePasswordRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
-                return false;
+                return ApiResponse<bool>.ErrorResult("Không tìm thấy tài khoản.");
 
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
-            return result.Succeeded;
+            if (result.Succeeded)
+                return ApiResponse<bool>.SuccessResult(true, "Đổi mật khẩu thành công.");
+            return ApiResponse<bool>.ErrorResult("Đổi mật khẩu thất bại.", result.Errors.Select(e => e.Description).ToList());
+        }
+
+        public async Task<ApiResponse<LoginResult>> RegisterParentAsync(RegisterParentRequest request)
+        {
+
+            if (!IsValidFullName(request.FullName, out string nameError))
+                return ApiResponse<LoginResult>.ErrorResult(nameError);
+            // Kiểm tra email đã tồn tại chưa
+            var exist = await _userManager.FindByEmailAsync(request.Email);
+            if (exist != null)
+                return ApiResponse<LoginResult>.ErrorResult("Email đã tồn tại.");
+            // Validate số điện thoại
+            if (!IsValidVietnamesePhone(request.PhoneNumber))
+                return ApiResponse<LoginResult>.ErrorResult("Số điện thoại không hợp lệ. Số điện thoại phải gồm 10 hoặc 11 chữ số, bắt đầu bằng số 0 và chỉ chứa ký tự số.");
+            // Kiểm tra số điện thoại đã tồn tại chưa
+            var parentRepo = _unitOfWork.GetRepository<Parent>();
+            var phoneExist = await parentRepo.Query()
+                .AnyAsync(p => p.PhoneNumber == request.PhoneNumber);
+            if (phoneExist)
+                return ApiResponse<LoginResult>.ErrorResult("Số điện thoại đã được sử dụng cho tài khoản khác.");
+
+
+            // Tạo user
+            var user = new User
+            {
+                UserName = request.UserName,
+                Email = request.Email,
+                Role = DataAccess.Enums.UserRole.Parent,
+                PhoneNumber = request.PhoneNumber,
+                IsActive = true,
+
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+                return ApiResponse<LoginResult>.ErrorResult("Tạo tài khoản thất bại.", result.Errors.Select(e => e.Description).ToList());
+
+            // Tạo bản ghi Parent
+            var parent = new Parent
+            {
+                UserId = user.Id,
+                FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber,
+                Address = request.Address
+            };
+            await _unitOfWork.GetRepository<Parent>().AddAsync(parent);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Đăng nhập trả luôn token
+            var token = "Login để lấy token";
+            var userDto = await BuildUserDtoAsync(user);
+
+            var loginResult = new LoginResult
+            {
+                Success = true,
+                Token = token,
+
+
+            };
+            return ApiResponse<LoginResult>.SuccessResult(loginResult, "Đăng ký thành công!");
         }
 
         private string GenerateJwtToken(User user, out DateTime expiresAt)
@@ -141,6 +198,71 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             // Add nurse/admin/etc. logic here if needed
 
             return dto;
+        }
+        private bool IsValidVietnamesePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return false;
+
+            // Xóa khoảng trắng, dấu chấm, dấu gạch
+            phone = phone.Replace(" ", "").Replace(".", "").Replace("-", "");
+
+            // Kiểm tra chỉ chứa số
+            if (!phone.All(char.IsDigit))
+                return false;
+
+            // Độ dài hợp lệ (10 hoặc 11 số)
+            if (phone.Length != 10 && phone.Length != 11)
+                return false;
+
+            // Bắt đầu bằng số 0 (Việt Nam)
+            if (!phone.StartsWith("0"))
+                return false;
+
+            return true;
+        }
+        private bool IsValidFullName(string fullName, out string errorMsg)
+        {
+            errorMsg = "";
+
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                errorMsg = "Họ tên không được để trống.";
+                return false;
+            }
+
+            fullName = fullName.Trim();
+
+            // Độ dài hợp lệ
+            if (fullName.Length < 2 || fullName.Length > 50)
+            {
+                errorMsg = "Họ tên phải từ 2 đến 50 ký tự.";
+                return false;
+            }
+
+            // Không cho phép nhiều dấu cách liên tiếp
+            if (fullName.Contains("  "))
+            {
+                errorMsg = "Họ tên không được chứa nhiều dấu cách liên tiếp.";
+                return false;
+            }
+
+            // Kiểm tra ký tự hợp lệ: chữ cái, dấu cách, dấu tiếng Việt, dấu . hoặc -
+            // Regex: ^[a-zA-ZÀ-ỹà-ỹ\s\.\-]+$
+            var regex = new System.Text.RegularExpressions.Regex(@"^[a-zA-ZÀ-ỹà-ỹ\s]+$");
+            if (!regex.IsMatch(fullName))
+            {
+                errorMsg = "Họ tên chỉ được chứa chữ cái, dấu cách.";
+                return false;
+            }
+
+            // Không cho phép toàn dấu chấm/gạch/trống
+            if (fullName.All(c => c == '.' || c == '-' || c == ' '))
+            {
+                errorMsg = "Họ tên không hợp lệ.";
+                return false;
+            }
+
+            return true;
         }
     }
 }

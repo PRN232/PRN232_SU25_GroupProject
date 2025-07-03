@@ -1,29 +1,41 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
     public class StudentService : IStudentService
     {
-        private readonly IUnitOfWork _unitOfWork; private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
         public StudentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<StudentDto> CreateStudentAsync(CreateStudentRequest request)
+        public async Task<ApiResponse<StudentDto>> CreateStudentAsync(CreateStudentRequest request)
         {
+
             var student = _mapper.Map<Student>(request);
             await _unitOfWork.StudentRepository.AddAsync(student);
             await _unitOfWork.SaveChangesAsync();
+
+
+            var medicalProfile = new MedicalProfile
+            {
+                StudentId = student.Id,
+                LastUpdated = DateTime.UtcNow,
+
+            };
+            await _unitOfWork.GetRepository<MedicalProfile>().AddAsync(medicalProfile);
+            await _unitOfWork.SaveChangesAsync();
+
 
             var studentWithRelations = await _unitOfWork.StudentRepository
                 .Query()
@@ -31,10 +43,14 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Include(s => s.MedicalProfile)
                 .FirstOrDefaultAsync(s => s.Id == student.Id);
 
-            return _mapper.Map<StudentDto>(studentWithRelations);
+            if (studentWithRelations == null)
+                return ApiResponse<StudentDto>.ErrorResult("Tạo học sinh thất bại.");
+
+            return ApiResponse<StudentDto>.SuccessResult(_mapper.Map<StudentDto>(studentWithRelations), "Tạo học sinh thành công.");
         }
 
-        public async Task<StudentDto> GetStudentByIdAsync(int id)
+
+        public async Task<ApiResponse<StudentDto>> GetStudentByIdAsync(int id)
         {
             var student = await _unitOfWork.StudentRepository
                 .Query()
@@ -42,10 +58,12 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Include(s => s.MedicalProfile)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
-            return student != null ? _mapper.Map<StudentDto>(student) : null;
+            if (student == null)
+                return ApiResponse<StudentDto>.ErrorResult("Không tìm thấy học sinh.");
+            return ApiResponse<StudentDto>.SuccessResult(_mapper.Map<StudentDto>(student));
         }
 
-        public async Task<List<StudentDto>> GetStudentsByClassAsync(string className)
+        public async Task<ApiResponse<List<StudentDto>>> GetStudentsByClassAsync(string className)
         {
             var students = await _unitOfWork.StudentRepository
                 .Query()
@@ -54,10 +72,10 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Where(s => s.ClassName == className)
                 .ToListAsync();
 
-            return _mapper.Map<List<StudentDto>>(students);
+            return ApiResponse<List<StudentDto>>.SuccessResult(_mapper.Map<List<StudentDto>>(students));
         }
 
-        public async Task<List<StudentDto>> GetStudentsByParentAsync(int parentId)
+        public async Task<ApiResponse<List<StudentDto>>> GetStudentsByParentAsync(int parentId)
         {
             var students = await _unitOfWork.StudentRepository
                 .Query()
@@ -66,10 +84,10 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Where(s => s.ParentId == parentId)
                 .ToListAsync();
 
-            return _mapper.Map<List<StudentDto>>(students);
+            return ApiResponse<List<StudentDto>>.SuccessResult(_mapper.Map<List<StudentDto>>(students));
         }
 
-        public async Task<bool> UpdateStudentAsync(UpdateStudentRequest request)
+        public async Task<ApiResponse<bool>> UpdateStudentAsync(UpdateStudentRequest request)
         {
             var student = await _unitOfWork.StudentRepository
                 .Query()
@@ -78,13 +96,13 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .FirstOrDefaultAsync(s => s.Id == request.Id);
 
             if (student == null)
-                return false;
+                return ApiResponse<bool>.ErrorResult("Không tìm thấy học sinh để cập nhật.");
 
             _mapper.Map(request, student);
             _unitOfWork.StudentRepository.Update(student);
             await _unitOfWork.SaveChangesAsync();
 
-            return true;
+            return ApiResponse<bool>.SuccessResult(true, "Cập nhật học sinh thành công.");
         }
     }
 }
