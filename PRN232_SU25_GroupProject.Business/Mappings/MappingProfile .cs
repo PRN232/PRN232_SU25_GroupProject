@@ -3,6 +3,9 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.Allergy;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.ChronicDisease;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.MedicalHistory;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Notifications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Parents;
@@ -53,13 +56,18 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Allergy, AllergyDto>().ReverseMap();
             CreateMap<ChronicDisease, ChronicDiseaseDto>().ReverseMap();
             CreateMap<MedicalHistory, MedicalHistoryDto>().ReverseMap();
-            CreateMap<VisionHearing, VisionHearingDto>().ReverseMap();
+
             CreateMap<VaccinationRecord, VaccinationRecordDto>().ReverseMap();
 
-            CreateMap<AddAllergyRequest, Allergy>();
-            CreateMap<AddChronicDiseaseRequest, ChronicDisease>();
-            CreateMap<UpdateVisionHearingRequest, VisionHearing>();
 
+
+            CreateMap<UpdateMedicalProfileRequest, MedicalProfile>();
+            CreateMap<CreateAllergyRequest, Allergy>();
+            CreateMap<UpdateAllergyRequest, Allergy>();
+            CreateMap<CreateChronicDiseaseRequest, ChronicDisease>();
+            CreateMap<UpdateChronicDiseaseRequest, ChronicDisease>();
+            CreateMap<CreateMedicalHistoryRequest, MedicalHistory>();
+            CreateMap<UpdateMedicalHistoryRequest, MedicalHistory>();
 
             ////////////////////////////////////////////////////
             ///           MEDICAL INCIDENT MAPPING           ///
@@ -104,10 +112,10 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<CreateCheckupCampaignRequest, HealthCheckupCampaign>();
             CreateMap<UpdateCheckupCampaignRequest, HealthCheckupCampaign>();
             CreateMap<HealthCheckupCampaign, HealthCheckupCampaignDto>();
-            
+
 
             CreateMap<RecordCheckupRequest, HealthCheckupResult>();
-            
+
             CreateMap<UpdateCheckupResultRequest, HealthCheckupResult>();
             CreateMap<HealthCheckupResult, HealthCheckupResultDto>()
                 .ForMember(dest => dest.StudentName, opt => opt.Ignore())
@@ -115,7 +123,7 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
                 .ForMember(dest => dest.CampaignName, opt => opt.Ignore())
                 .ForMember(dest => dest.NurseName, opt => opt.Ignore());
 
-            
+
             ////////////////////////////////////////////////////
             ///           NOTIFICATION MAPPING               ///
             ////////////////////////////////////////////////////

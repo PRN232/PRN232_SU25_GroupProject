@@ -9,7 +9,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Parents
 {
     public class UpdateParentRequest
     {
-        public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]

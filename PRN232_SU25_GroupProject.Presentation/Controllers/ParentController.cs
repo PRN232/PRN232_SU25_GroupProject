@@ -14,7 +14,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             _parentService = parentService;
         }
 
-        [HttpGet("by-user/{userId}")]
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetParentByUserId(int userId)
         {
             var response = await _parentService.GetParentByUserIdAsync(userId);
@@ -29,10 +29,10 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateParentInfo([FromBody] UpdateParentRequest request)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateParentInfo(int userId, [FromBody] UpdateParentRequest request)
         {
-            var response = await _parentService.UpdateParentInfoAsync(request);
+            var response = await _parentService.UpdateParentInfoAsync(userId, request);
             if (!response.Success) return NotFound(response);
             return Ok(response);
         }

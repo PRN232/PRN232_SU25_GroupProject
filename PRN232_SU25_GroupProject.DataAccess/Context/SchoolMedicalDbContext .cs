@@ -19,7 +19,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
         public DbSet<Allergy> Allergies { get; set; }
         public DbSet<ChronicDisease> ChronicDiseases { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
-        public DbSet<VisionHearing> VisionHearings { get; set; }
+
 
         // Medical Incidents & Events
         public DbSet<MedicalIncident> MedicalIncidents { get; set; }
@@ -88,11 +88,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
                 .HasForeignKey(cd => cd.MedicalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<VisionHearing>()
-                .HasOne<MedicalProfile>()
-                .WithOne(mp => mp.VisionHearing)
-                .HasForeignKey<VisionHearing>(vh => vh.MedicalProfileId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Medical Incident relationships
             modelBuilder.Entity<MedicalIncident>()

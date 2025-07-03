@@ -8,7 +8,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
     {
         Task<ApiResponse<ParentDto>> GetParentByUserIdAsync(int userId);
         Task<ApiResponse<List<StudentDto>>> GetChildrenAsync(int parentId);
-        Task<ApiResponse<bool>> UpdateParentInfoAsync(UpdateParentRequest request);
+        Task<ApiResponse<bool>> UpdateParentInfoAsync(int userId, UpdateParentRequest request);
     }
 
 }
