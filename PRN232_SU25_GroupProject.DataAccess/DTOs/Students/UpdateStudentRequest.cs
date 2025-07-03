@@ -9,7 +9,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Students
 {
     public class UpdateStudentRequest
     {
-        public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -17,5 +16,6 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Students
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string ClassName { get; set; }
+        public int ParentId { get; set; }
     }
 }

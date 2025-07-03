@@ -233,7 +233,6 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Include(p => p.Allergies)
                 .Include(p => p.ChronicDiseases)
                 .Include(p => p.MedicalHistories)
-                .Include(p => p.VisionHearing)
                 .FirstOrDefaultAsync(p => p.StudentId == studentId);
 
             var incidents = await _unitOfWork.MedicalIncidentRepository.Query()

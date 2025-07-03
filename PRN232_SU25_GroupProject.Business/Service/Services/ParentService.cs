@@ -28,9 +28,12 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             if (parent == null)
                 return ApiResponse<ParentDto>.ErrorResult("Không tìm thấy thông tin phụ huynh.");
-
+            var user = await _unitOfWork.UserRepository.Query().FirstOrDefaultAsync(c => c.Id == userId);
             var dto = _mapper.Map<ParentDto>(parent);
-            dto.Children = _mapper.Map<List<StudentDto>>(parent.Children);
+            dto.PhoneNumber = parent.PhoneNumber;
+            dto.FullName = parent.FullName;
+            dto.Address = parent.Address;
+            dto.Email = user.Email;
 
             return ApiResponse<ParentDto>.SuccessResult(dto);
         }
@@ -45,15 +48,16 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             return ApiResponse<List<StudentDto>>.SuccessResult(_mapper.Map<List<StudentDto>>(students));
         }
 
-        public async Task<ApiResponse<bool>> UpdateParentInfoAsync(UpdateParentRequest request)
+        public async Task<ApiResponse<bool>> UpdateParentInfoAsync(int userId, UpdateParentRequest request)
         {
-            var parent = await _unitOfWork.ParentRepository.GetByIdAsync(request.Id);
+            var parent = await _unitOfWork.ParentRepository
+                .Query()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
             if (parent == null)
                 return ApiResponse<bool>.ErrorResult("Không tìm thấy thông tin phụ huynh.");
 
-            parent.FullName = request.FullName;
-            parent.PhoneNumber = request.PhoneNumber;
-            parent.Address = request.Address;
+            _mapper.Map(request, parent);
 
             _unitOfWork.ParentRepository.Update(parent);
             await _unitOfWork.SaveChangesAsync();

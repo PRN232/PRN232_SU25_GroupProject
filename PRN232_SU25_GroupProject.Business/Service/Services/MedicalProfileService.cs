@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -23,128 +19,67 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<MedicalProfileDto> GetProfileByStudentIdAsync(int studentId)
+
+        public async Task<ApiResponse<MedicalProfileDto>> GetByStudentIdAsync(int studentId)
         {
-            var profile = await _unitOfWork.MedicalProfileRepository
+            var profile = await _unitOfWork.GetRepository<MedicalProfile>()
                 .Query()
                 .Include(mp => mp.Allergies)
                 .Include(mp => mp.ChronicDiseases)
                 .Include(mp => mp.MedicalHistories)
-                .Include(mp => mp.VisionHearing)
+                .Include(mp => mp.VaccinationRecords)
                 .FirstOrDefaultAsync(mp => mp.StudentId == studentId);
 
-            if (profile == null) return null;
+            if (profile == null)
+                return ApiResponse<MedicalProfileDto>.ErrorResult("Không tìm thấy hồ sơ sức khỏe.");
 
-            var student = await _unitOfWork.StudentRepository.GetByIdAsync(studentId);
             var dto = _mapper.Map<MedicalProfileDto>(profile);
-            dto.StudentName = student?.FullName;
 
-            var vaccineRecords = await _unitOfWork.VaccinationRecordRepository
+            // Lấy kết quả khám sức khỏe mới nhất (id lớn nhất hoặc ngày kiểm tra mới nhất)
+            var lastCheckup = await _unitOfWork.HealthCheckupResultRepository
                 .Query()
-                .Where(v => v.StudentId == studentId)
-                .ToListAsync();
+                .Where(x => x.StudentId == studentId)
+                .OrderByDescending(x => x.CheckupDate)
+                .FirstOrDefaultAsync();
 
-            dto.VaccinationRecords = _mapper.Map<List<VaccinationRecordDto>>(vaccineRecords);
-            return dto;
-        }
-
-        public async Task<bool> UpdateMedicalProfileAsync(UpdateMedicalProfileRequest request)
-        {
-            var profile = await _unitOfWork.MedicalProfileRepository
-                .Query()
-                .Include(p => p.Allergies)
-                .Include(p => p.ChronicDiseases)
-                .Include(p => p.MedicalHistories)
-                .Include(p => p.VisionHearing)
-                .FirstOrDefaultAsync(p => p.StudentId == request.StudentId);
-
-            if (profile == null) return false;
-
-            // Clear and re-add
-            profile.Allergies.Clear();
-            profile.ChronicDiseases.Clear();
-            profile.MedicalHistories.Clear();
-
-            profile.Allergies = _mapper.Map<List<Allergy>>(request.Allergies);
-            profile.ChronicDiseases = _mapper.Map<List<ChronicDisease>>(request.ChronicDiseases);
-            profile.MedicalHistories = _mapper.Map<List<MedicalHistory>>(request.MedicalHistories);
-
-            // Update VisionHearing
-            if (profile.VisionHearing == null && request.VisionHearing != null)
+            if (lastCheckup != null)
             {
-                profile.VisionHearing = _mapper.Map<VisionHearing>(request.VisionHearing);
-            }
-            else if (request.VisionHearing != null)
-            {
-                _mapper.Map(request.VisionHearing, profile.VisionHearing);
+                dto.Height = lastCheckup.Height;
+                dto.Weight = lastCheckup.Weight;
+                dto.BloodPressure = lastCheckup.BloodPressure;
+                dto.VisionTest = lastCheckup.VisionTest;
+                dto.HearingTest = lastCheckup.HearingTest;
+                dto.GeneralHealth = lastCheckup.GeneralHealth;
+                dto.RequiresFollowup = lastCheckup.RequiresFollowup;
+                dto.Recommendations = lastCheckup.Recommendations;
+                dto.LastCheckupDate = lastCheckup.CheckupDate;
+                // KHÔNG map các trường id, campaignid, nursed, ...
             }
 
-            profile.LastUpdated = DateTime.UtcNow;
-
-            _unitOfWork.MedicalProfileRepository.Update(profile);
-            await _unitOfWork.SaveChangesAsync();
-
-            return true;
+            return ApiResponse<MedicalProfileDto>.SuccessResult(dto);
         }
 
-        public async Task<bool> AddAllergyAsync(AddAllergyRequest request)
+
+        public async Task<ApiResponse<MedicalProfileDto>> UpdateAsync(UpdateMedicalProfileRequest request)
         {
-            var profile = await _unitOfWork.MedicalProfileRepository
+            var profile = await _unitOfWork.GetRepository<MedicalProfile>()
                 .Query()
-                .Include(p => p.Allergies)
-                .FirstOrDefaultAsync(p => p.Id == request.MedicalProfileId);
+                .Include(mp => mp.Allergies)
+                .Include(mp => mp.ChronicDiseases)
+                .Include(mp => mp.MedicalHistories)
+                .Include(mp => mp.VaccinationRecords)
+                .FirstOrDefaultAsync(mp => mp.StudentId == request.StudentId);
 
-            if (profile == null) return false;
+            if (profile == null)
+                return ApiResponse<MedicalProfileDto>.ErrorResult("Không tìm thấy hồ sơ sức khỏe.");
 
-            var allergy = _mapper.Map<Allergy>(request);
-            profile.Allergies.Add(allergy);
+            _mapper.Map(request, profile);
             profile.LastUpdated = DateTime.UtcNow;
 
-            await _unitOfWork.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> AddChronicDiseaseAsync(AddChronicDiseaseRequest request)
-        {
-            var profile = await _unitOfWork.MedicalProfileRepository
-                .Query()
-                .Include(p => p.ChronicDiseases)
-                .FirstOrDefaultAsync(p => p.Id == request.MedicalProfileId);
-
-            if (profile == null) return false;
-
-            var disease = _mapper.Map<ChronicDisease>(request);
-            profile.ChronicDiseases.Add(disease);
-            profile.LastUpdated = DateTime.UtcNow;
-
-            await _unitOfWork.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateVisionHearingAsync(UpdateVisionHearingRequest request)
-        {
-            var profile = await _unitOfWork.MedicalProfileRepository
-                .Query()
-                .Include(p => p.VisionHearing)
-                .FirstOrDefaultAsync(p => p.Id == request.MedicalProfileId);
-
-            if (profile == null) return false;
-
-            if (profile.VisionHearing == null)
-            {
-                profile.VisionHearing = _mapper.Map<VisionHearing>(request);
-            }
-            else
-            {
-                _mapper.Map(request, profile.VisionHearing);
-            }
-
-            profile.LastUpdated = DateTime.UtcNow;
-
-            _unitOfWork.MedicalProfileRepository.Update(profile);
+            _unitOfWork.GetRepository<MedicalProfile>().Update(profile);
             await _unitOfWork.SaveChangesAsync();
 
-            return true;
+            return ApiResponse<MedicalProfileDto>.SuccessResult(_mapper.Map<MedicalProfileDto>(profile), "Cập nhật hồ sơ sức khỏe thành công.");
         }
     }
 }

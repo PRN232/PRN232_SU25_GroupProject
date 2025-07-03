@@ -45,9 +45,9 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateStudent([FromBody] UpdateStudentRequest request)
+        public async Task<IActionResult> UpdateStudent(int id, [FromBody] UpdateStudentRequest request)
         {
-            var response = await _studentService.UpdateStudentAsync(request);
+            var response = await _studentService.UpdateStudentAsync(id, request);
             if (!response.Success) return NotFound(response);
             return Ok(response);
         }

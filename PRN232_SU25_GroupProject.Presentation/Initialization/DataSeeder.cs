@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using PRN232_SU25_GroupProject.DataAccess.Context;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
@@ -40,7 +37,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             SeedNotifications(context);          // 14. Thông báo hệ thống
 
             SeedMedicalHistories(context);     // 15. Tiền sử điều trị
-            SeedVisionHearing(context);        // 16. Khám mắt & tai
+
 
         }
 
@@ -491,44 +488,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
 
             context.SaveChanges();
         }
-        private static void SeedVisionHearing(SchoolMedicalDbContext context)
-        {
-            if (context.VisionHearings.Any()) return;
 
-            var medicalprofile = context.MedicalProfiles.ToList();
-
-            context.VisionHearings.AddRange(
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[0].Id,
-                    VisionLeft = "10/10",
-                    VisionRight = "10/10",
-                    HearingLeft = "Bình thường",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-1)
-                },
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[1].Id,
-                    VisionLeft = "8/10",
-                    VisionRight = "9/10",
-                    HearingLeft = "Bình thường",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-1)
-                },
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[3].Id,
-                    VisionLeft = "10/10",
-                    VisionRight = "9/10",
-                    HearingLeft = "Nghe kém nhẹ",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-2)
-                }
-            );
-
-            context.SaveChanges();
-        }
         #endregion
 
         /*────────────────────────────── PASSWORD SEEDING  ──────────────────────────────*/

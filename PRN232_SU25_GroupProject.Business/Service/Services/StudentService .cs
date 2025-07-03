@@ -87,13 +87,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             return ApiResponse<List<StudentDto>>.SuccessResult(_mapper.Map<List<StudentDto>>(students));
         }
 
-        public async Task<ApiResponse<bool>> UpdateStudentAsync(UpdateStudentRequest request)
+        public async Task<ApiResponse<bool>> UpdateStudentAsync(int id, UpdateStudentRequest request)
         {
             var student = await _unitOfWork.StudentRepository
                 .Query()
-                .Include(s => s.Parent)
-                .Include(s => s.MedicalProfile)
-                .FirstOrDefaultAsync(s => s.Id == request.Id);
+                .FirstOrDefaultAsync(s => s.Id == id);
 
             if (student == null)
                 return ApiResponse<bool>.ErrorResult("Không tìm thấy học sinh để cập nhật.");
