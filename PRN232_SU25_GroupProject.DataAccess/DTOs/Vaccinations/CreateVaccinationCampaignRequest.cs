@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
 {
@@ -21,7 +16,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
         [Required]
         public string TargetGrades { get; set; }
 
-        public string Description { get; set; }
+
     }
 
 }
