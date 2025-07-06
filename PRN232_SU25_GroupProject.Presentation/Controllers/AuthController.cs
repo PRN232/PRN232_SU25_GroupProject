@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
 {

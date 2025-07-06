@@ -4,11 +4,6 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Reports
 {

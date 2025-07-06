@@ -10,7 +10,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
+using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

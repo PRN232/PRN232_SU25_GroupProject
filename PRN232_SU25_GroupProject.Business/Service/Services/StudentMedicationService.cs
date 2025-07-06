@@ -3,11 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -115,7 +111,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             return true;
         }
 
-        
+
 
         public async Task<bool> AdministerMedicationAsync(AdministerMedicationRequest request)
         {

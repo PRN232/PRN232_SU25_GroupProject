@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalConsents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.Allergy;
@@ -100,13 +101,17 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<VaccinationCampaign, VaccinationCampaignDto>();
             CreateMap<CreateVaccinationCampaignRequest, VaccinationCampaign>();
             CreateMap<UpdateVaccinationCampaignRequest, VaccinationCampaign>();
-            CreateMap<MedicalConsent, MedicalConsentDto>();
-            CreateMap<SubmitConsentRequest, MedicalConsent>();
+
+            CreateMap<MedicalConsent, MedicalConsentDto>()
+                .ForMember(dest => dest.StudentName, opt => opt.Ignore());
+            CreateMap<CreateMedicalConsentRequest, MedicalConsent>();
+            CreateMap<UpdateMedicalConsentRequest, MedicalConsent>();
 
             CreateMap<VaccinationRecord, VaccinationRecordDto>();
             CreateMap<RecordVaccinationRequest, VaccinationRecord>();
             CreateMap<CreateVaccinationRecordRequest, VaccinationRecord>();
             CreateMap<UpdateVaccinationRecordRequest, VaccinationRecord>();
+
 
             ////////////////////////////////////////////////////
             ///           HEALTH CHECKUP MAPPING             ///

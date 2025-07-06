@@ -1,5 +1,4 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.Allergy;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PRN232_SU25_GroupProject.DataAccess.Context;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
+using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
 using PRN232_SU25_GroupProject.Presentation.DependencyInjection;
 using PRN232_SU25_GroupProject.Presentation.Initialization;
 using System.Reflection;
@@ -14,11 +15,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<SchoolMedicalDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddApplicationService();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
@@ -26,6 +33,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SMMS API", Version = "v1" });
     c.EnableAnnotations();
+    c.SchemaFilter<SwaggerSchemaExampleFilter>();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme.",

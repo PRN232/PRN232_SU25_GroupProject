@@ -296,7 +296,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                 CampaignName = "Tiêm cúm mùa 2025",
                 VaccineType = "Cúm A/B",
                 ScheduledDate = DateTime.Today.AddDays(10),
-                TargetGrades = "Khối 1-6",
+                TargetGrades = "3B2, 3C1",
                 Status = VaccinationStatus.Planned
             });
             context.SaveChanges();

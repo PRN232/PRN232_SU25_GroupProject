@@ -1,12 +1,9 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.Context;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
-using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace PRN232_SU25_GroupProject.DataAccess.Repositories
+
+namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
