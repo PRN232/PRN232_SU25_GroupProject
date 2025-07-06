@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalConsents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.Allergy;
@@ -10,6 +11,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Notifications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Parents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
@@ -85,14 +87,14 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>();
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
-            CreateMap<SubmitMedicationRequest, StudentMedication>();
-            CreateMap<StudentMedication, StudentMedicationDto>()
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
+
+            CreateMap<StudentMedication, StudentMedicationDto>();
 
             CreateMap<SubmitMedicationRequest, StudentMedication>();
             CreateMap<AdministerMedicationRequest, StudentMedication>();
+            CreateMap<ApproveStudentMedicationRequest, StudentMedication>();
+            CreateMap<UpdateStudentMedicationRequest, StudentMedication>();
+            CreateMap<CreateStudentMedicationRequest, StudentMedication>();
 
             ////////////////////////////////////////////////////
             ///           VACCINATION MAPPING                ///
@@ -100,13 +102,17 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<VaccinationCampaign, VaccinationCampaignDto>();
             CreateMap<CreateVaccinationCampaignRequest, VaccinationCampaign>();
             CreateMap<UpdateVaccinationCampaignRequest, VaccinationCampaign>();
-            CreateMap<MedicalConsent, MedicalConsentDto>();
-            CreateMap<SubmitConsentRequest, MedicalConsent>();
+
+            CreateMap<MedicalConsent, MedicalConsentDto>()
+                .ForMember(dest => dest.StudentName, opt => opt.Ignore());
+            CreateMap<CreateMedicalConsentRequest, MedicalConsent>();
+            CreateMap<UpdateMedicalConsentRequest, MedicalConsent>();
 
             CreateMap<VaccinationRecord, VaccinationRecordDto>();
             CreateMap<RecordVaccinationRequest, VaccinationRecord>();
             CreateMap<CreateVaccinationRecordRequest, VaccinationRecord>();
             CreateMap<UpdateVaccinationRecordRequest, VaccinationRecord>();
+
 
             ////////////////////////////////////////////////////
             ///           HEALTH CHECKUP MAPPING             ///
