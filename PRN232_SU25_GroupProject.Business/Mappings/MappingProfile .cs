@@ -11,6 +11,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Notifications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Parents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Users;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
@@ -86,14 +87,14 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>();
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
-            CreateMap<SubmitMedicationRequest, StudentMedication>();
-            CreateMap<StudentMedication, StudentMedicationDto>()
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
+
+            CreateMap<StudentMedication, StudentMedicationDto>();
 
             CreateMap<SubmitMedicationRequest, StudentMedication>();
             CreateMap<AdministerMedicationRequest, StudentMedication>();
+            CreateMap<ApproveStudentMedicationRequest, StudentMedication>();
+            CreateMap<UpdateStudentMedicationRequest, StudentMedication>();
+            CreateMap<CreateStudentMedicationRequest, StudentMedication>();
 
             ////////////////////////////////////////////////////
             ///           VACCINATION MAPPING                ///

@@ -1,7 +1,7 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 
-namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
+namespace PRN232_SU25_GroupProject.DataAccess.Repository
 {
     public interface IUnitOfWork : IDisposable
     {

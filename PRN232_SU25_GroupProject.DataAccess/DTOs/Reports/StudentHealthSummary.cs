@@ -1,7 +1,7 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
 
