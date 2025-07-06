@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalConsents;
+using System.Security.Claims;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
 {
@@ -173,8 +174,8 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         [Authorize(Roles = "Parent")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateMedicalConsentRequest request)
         {
-
-            var res = await _medicalConsentService.UpdateMedicalConsentAsync( id, request);
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var res = await _medicalConsentService.UpdateMedicalConsentAsync(id, request, currentUserId);
             if (!res.Success) return NotFound(res);
             return Ok(res);
         }

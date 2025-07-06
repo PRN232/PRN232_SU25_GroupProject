@@ -391,7 +391,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                 CampaignName = "Khám sức khỏe Đầu Năm 2025-2026",
                 CheckupTypes = "Thị lực, Chiều cao, Cân nặng, Huyết áp",
                 ScheduledDate = DateTime.Today.AddMonths(2),
-                TargetGrades = "Khối 1-9",
+                TargetGrades = "2B3, 7B3",
                 Status = CheckupStatus.Planned
             });
             context.SaveChanges();

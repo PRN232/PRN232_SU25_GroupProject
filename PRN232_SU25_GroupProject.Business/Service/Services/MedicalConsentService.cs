@@ -4,7 +4,6 @@ using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalConsents;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Enums;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
@@ -286,15 +285,22 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
 
         // UPDATE
-        public async Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request)
+        public async Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int currentUserId)
         {
-
             var consent = await _unitOfWork.MedicalConsentRepository.GetByIdAsync(id);
-
             if (consent == null)
                 return ApiResponse<MedicalConsentDto>.ErrorResult("Không tìm thấy giấy đồng ý.");
 
+            // Fetch the student linked to this consent to get the ParentId
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(consent.StudentId);
+            if (student == null)
+                return ApiResponse<MedicalConsentDto>.ErrorResult("Không tìm thấy học sinh liên quan.");
+            var parrentid = await _unitOfWork.ParentRepository.FindAsync(p => p.Id == student.ParentId);
+            // Check if the current user is the parent of the student
+            if (student.ParentId != parrentid.UserId)
+                return ApiResponse<MedicalConsentDto>.ErrorResult("Bạn không có quyền sửa đổi giấy đồng ý này.");
 
+            // Update consent details
             consent.ConsentGiven = request.ConsentGiven;
             consent.ParentSignature = request.ParentSignature;
             consent.Note = request.Note;
@@ -303,11 +309,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             _unitOfWork.MedicalConsentRepository.Update(consent);
             await _unitOfWork.SaveChangesAsync();
 
-            // Lấy các name
-            var student = await _unitOfWork.StudentRepository.GetByIdAsync(consent.StudentId);
-            var parent = student != null ? await _unitOfWork.ParentRepository.GetByIdAsync(student.ParentId) : null;
+            // Retrieve the parent and campaign details
+            var parent = await _unitOfWork.ParentRepository.GetByIdAsync(student.ParentId);
             var campaign = await _unitOfWork.HealthCheckupCampaignRepository.GetByIdAsync(consent.CampaignId);
 
+            // Map to DTO
             var dto = _mapper.Map<MedicalConsentDto>(consent);
             dto.StudentName = student?.FullName;
             dto.ParentId = parent?.Id ?? 0;
@@ -316,6 +322,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             return ApiResponse<MedicalConsentDto>.SuccessResult(dto, "Cập nhật giấy đồng ý thành công.");
         }
+
 
         // DELETE
         public async Task<ApiResponse<bool>> DeleteMedicalConsentAsync(int id)

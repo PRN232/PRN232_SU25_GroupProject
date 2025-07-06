@@ -12,7 +12,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<MedicalConsentDto>> CreateMedicalConsentAsync(CreateMedicalConsentRequest request);
         Task<ApiResponse<List<MedicalConsentDto>>> CreateMedicalConsentForClassAsync(CreateMedicalConsentClassRequest request);
 
-        Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request);
+        Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int currentUserId);
         Task<ApiResponse<bool>> DeleteMedicalConsentAsync(int id);
     }
 
