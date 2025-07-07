@@ -50,6 +50,7 @@ namespace PRN232_SU25_GroupProject.Presentation.DependencyInjection
             services.AddScoped<IVaccinationCampaignService, VaccinationCampaignService>();
             services.AddScoped<IVaccinationRecordService, VaccinationRecordService>();
             services.AddScoped<IMedicalConsentService, MedicalConsentService>();
+            services.AddScoped<IMedicationsGivenService, MedicationsGivenService>();
 
 
 

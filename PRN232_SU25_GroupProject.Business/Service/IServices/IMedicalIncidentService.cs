@@ -1,14 +1,14 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IMedicalIncidentService
     {
-        Task<MedicalIncidentDto> CreateIncidentAsync(CreateIncidentRequest request);
-        Task<MedicalIncidentDto> GetIncidentByIdAsync(int id);
-        Task<List<MedicalIncidentDto>> GetIncidentsByStudentAsync(int studentId);
-        Task<List<MedicalIncidentDto>> GetIncidentsByDateRangeAsync(DateTime from, DateTime to);
-        Task<bool> UpdateIncidentAsync(UpdateIncidentRequest request);
-        Task<bool> NotifyParentAsync(int incidentId);
+        Task<ApiResponse<List<MedicalIncidentDto>>> GetAllIncidentsAsync();
+        Task<ApiResponse<MedicalIncidentDto>> GetIncidentByIdAsync(int id);
+        Task<ApiResponse<MedicalIncidentDto>> CreateIncidentAsync(CreateMedicalIncidentRequest request);
+        Task<ApiResponse<MedicalIncidentDto>> UpdateIncidentAsync(int id, UpdateMedicalIncidentRequest request);
+        Task<ApiResponse<bool>> DeleteIncidentAsync(int id);
     }
 }

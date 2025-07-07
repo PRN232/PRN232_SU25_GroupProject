@@ -7,6 +7,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.Allergy;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.ChronicDisease;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles.MedicalHistory;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicationGivens;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Notifications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Parents;
@@ -75,11 +76,12 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             ///           MEDICAL INCIDENT MAPPING           ///
             ////////////////////////////////////////////////////
             CreateMap<MedicalIncident, MedicalIncidentDto>();
-            CreateMap<CreateIncidentRequest, MedicalIncident>();
-            CreateMap<UpdateIncidentRequest, MedicalIncident>();
+            CreateMap<CreateMedicalIncidentRequest, MedicalIncident>();
+            CreateMap<UpdateMedicalIncidentRequest, MedicalIncident>();
 
-            CreateMap<MedicationGiven, MedicationGivenDto>()
-    .ForMember(dest => dest.MedicationName, opt => opt.Ignore());
+            CreateMap<MedicationGiven, MedicationGivenDto>().ReverseMap();
+            CreateMap<CreateMedicationsGivenRequest, MedicationGiven>();
+            CreateMap<UpdateMedicationsGivenRequest, MedicationGiven>();
 
             ////////////////////////////////////////////////////
             ///           MEDICATION MAPPING                 ///
@@ -87,10 +89,10 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>();
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
-
             CreateMap<StudentMedication, StudentMedicationDto>();
 
-            CreateMap<SubmitMedicationRequest, StudentMedication>();
+            CreateMap<AddMedicationRequest, Medication>();
+            CreateMap<UpdateMedicationRequest, Medication>();
             CreateMap<AdministerMedicationRequest, StudentMedication>();
             CreateMap<ApproveStudentMedicationRequest, StudentMedication>();
             CreateMap<UpdateStudentMedicationRequest, StudentMedication>();

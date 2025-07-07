@@ -13,6 +13,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository
         IGenericRepository<MedicalProfile> MedicalProfileRepository { get; }
         IGenericRepository<MedicalIncident> MedicalIncidentRepository { get; }
         IGenericRepository<Medication> MedicationRepository { get; }
+        IGenericRepository<MedicationGiven> MedicationGivenRepository { get; }
         IGenericRepository<StudentMedication> StudentMedicationRepository { get; }
         IGenericRepository<VaccinationCampaign> VaccinationCampaignRepository { get; }
         IGenericRepository<VaccinationRecord> VaccinationRecordRepository { get; }

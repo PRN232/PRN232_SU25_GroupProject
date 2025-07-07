@@ -40,6 +40,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository
         public IGenericRepository<MedicalProfile> MedicalProfileRepository => GetRepository<MedicalProfile>();
         public IGenericRepository<MedicalIncident> MedicalIncidentRepository => GetRepository<MedicalIncident>();
         public IGenericRepository<Medication> MedicationRepository => GetRepository<Medication>();
+        public IGenericRepository<MedicationGiven> MedicationGivenRepository => GetRepository<MedicationGiven>();
         public IGenericRepository<StudentMedication> StudentMedicationRepository => GetRepository<StudentMedication>();
         public IGenericRepository<VaccinationCampaign> VaccinationCampaignRepository => GetRepository<VaccinationCampaign>();
         public IGenericRepository<VaccinationRecord> VaccinationRecordRepository => GetRepository<VaccinationRecord>();
