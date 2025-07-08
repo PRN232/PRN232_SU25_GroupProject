@@ -19,7 +19,10 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
 
         public virtual async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+            // Ensure the previous task completes before proceeding
+            var entity = await _dbSet.FindAsync(id);
+            return entity;
+
         }
 
         public virtual async Task<IEnumerable<T>> GetListById(int id)

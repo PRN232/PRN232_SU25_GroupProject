@@ -4,17 +4,13 @@ using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalProfiles;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Reports;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {

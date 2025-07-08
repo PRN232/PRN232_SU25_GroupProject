@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -22,38 +19,89 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MedicationDto>> GetAllMedicationsAsync()
+        // Add Medication
+        public async Task<ApiResponse<MedicationDto>> AddMedicationAsync(AddMedicationRequest request)
         {
-            var medications = await _unitOfWork.MedicationRepository.GetAllAsync();
-            return _mapper.Map<List<MedicationDto>>(medications);
+            // Check if a medication with the same name already exists
+            var existingMedication = await _unitOfWork.MedicationRepository
+                .Query()
+                .FirstOrDefaultAsync(m => m.Name == request.Name);
+
+            if (existingMedication != null)
+                return ApiResponse<MedicationDto>.ErrorResult("Thuốc này đã tồn tại trong hệ thống.");
+
+            var medication = _mapper.Map<Medication>(request);
+            await _unitOfWork.MedicationRepository.AddAsync(medication);
+            await _unitOfWork.SaveChangesAsync();
+
+            var dto = _mapper.Map<MedicationDto>(medication);
+            return ApiResponse<MedicationDto>.SuccessResult(dto, "Thêm thuốc thành công.");
         }
 
-        public async Task<MedicationDto> GetMedicationByIdAsync(int id)
+        // Update Medication
+        public async Task<ApiResponse<MedicationDto>> UpdateMedicationAsync(int id, UpdateMedicationRequest request)
         {
             var medication = await _unitOfWork.MedicationRepository.GetByIdAsync(id);
-            return medication != null ? _mapper.Map<MedicationDto>(medication) : null;
-        }
+            if (medication == null)
+                return ApiResponse<MedicationDto>.ErrorResult("Không tìm thấy thuốc.");
 
-        public async Task<bool> UpdateStockAsync(int medicationId, int quantity)
-        {
-            var medication = await _unitOfWork.MedicationRepository.GetByIdAsync(medicationId);
-            if (medication == null) return false;
-
-            medication.StockQuantity = quantity;
+            // Update medication details
+            _mapper.Map(request, medication);
             _unitOfWork.MedicationRepository.Update(medication);
             await _unitOfWork.SaveChangesAsync();
 
-            return true;
+            var dto = _mapper.Map<MedicationDto>(medication);
+            return ApiResponse<MedicationDto>.SuccessResult(dto, "Cập nhật thuốc thành công.");
         }
 
-        public async Task<List<MedicationDto>> GetExpiringMedicationsAsync(DateTime beforeDate)
+        // Delete Medication
+        public async Task<ApiResponse<bool>> DeleteMedicationAsync(int id)
         {
-            var medications = await _unitOfWork.MedicationRepository
-                .Query()
-                .Where(m => m.ExpiryDate <= beforeDate)
+            // Tìm kiếm thuốc
+            var medication = await _unitOfWork.MedicationRepository.GetByIdAsync(id);
+            if (medication == null)
+                return ApiResponse<bool>.ErrorResult("Không tìm thấy thuốc.");
+
+            // Kiểm tra và xóa các bản ghi tham chiếu trong MedicationsGiven
+            var medicationsGiven = await _unitOfWork.MedicationGivenRepository.Query()
+                .Where(mg => mg.MedicationId == id)
                 .ToListAsync();
 
-            return _mapper.Map<List<MedicationDto>>(medications);
+            if (medicationsGiven.Any())
+            {
+                var medicationGivenIds = medicationsGiven.Select(mg => mg.Id).ToList(); // Lấy danh sách các Id của medicationsGiven
+                var idsString = string.Join(", ", medicationGivenIds); // Chuyển danh sách Id thành chuỗi
+
+                // Trả về lỗi nếu thuốc đang được sử dụng trong MedicationsGiven
+                return ApiResponse<bool>.ErrorResult($"Không thể xóa thuốc do thuốc đó đang được sử dụng ở MedicationsGiven với các Id: {idsString}");
+            }
+
+            // Nếu không có bản ghi nào trong MedicationsGiven tham chiếu đến thuốc, tiến hành xóa thuốc
+            _unitOfWork.MedicationRepository.Delete(medication);
+            await _unitOfWork.SaveChangesAsync();
+
+            return ApiResponse<bool>.SuccessResult(true, "Xóa thuốc thành công.");
+        }
+
+
+
+        // Get All Medications
+        public async Task<ApiResponse<List<MedicationDto>>> GetAllMedicationsAsync()
+        {
+            var medications = await _unitOfWork.MedicationRepository.GetAllAsync();
+            var dtos = _mapper.Map<List<MedicationDto>>(medications);
+            return ApiResponse<List<MedicationDto>>.SuccessResult(dtos);
+        }
+
+        // Get Medication By Id
+        public async Task<ApiResponse<MedicationDto>> GetMedicationByIdAsync(int id)
+        {
+            var medication = await _unitOfWork.MedicationRepository.GetByIdAsync(id);
+            if (medication == null)
+                return ApiResponse<MedicationDto>.ErrorResult("Không tìm thấy thuốc.");
+
+            var dto = _mapper.Map<MedicationDto>(medication);
+            return ApiResponse<MedicationDto>.SuccessResult(dto);
         }
     }
 }

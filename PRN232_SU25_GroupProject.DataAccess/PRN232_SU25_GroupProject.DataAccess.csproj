@@ -6,6 +6,12 @@
 		<Nullable>enable</Nullable>
 
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="DTOs\CreateMedicalConsentRequest\**" />
+	  <EmbeddedResource Remove="DTOs\CreateMedicalConsentRequest\**" />
+	  <None Remove="DTOs\CreateMedicalConsentRequest\**" />
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />

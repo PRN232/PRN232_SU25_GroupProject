@@ -1,5 +1,4 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces
 {

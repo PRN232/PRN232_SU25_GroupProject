@@ -7,6 +7,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
     {
         Task<ApiResponse<HealthCheckupResultDto>> RecordCheckupResultAsync(RecordCheckupRequest request);
         Task<ApiResponse<HealthCheckupResultDto>> GetResultByIdAsync(int resultId);
+
         Task<ApiResponse<List<HealthCheckupResultDto>>> GetResultsByCampaignAsync(int campaignId);
         Task<ApiResponse<List<HealthCheckupResultDto>>> GetResultsByStudentAsync(int studentId, int? currentUserId, string currentUserRole);
         Task<ApiResponse<HealthCheckupResultDto>> UpdateResultAsync(UpdateCheckupResultRequest request);

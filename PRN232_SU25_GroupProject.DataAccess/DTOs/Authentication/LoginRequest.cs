@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication
 {
@@ -7,13 +8,13 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication
     {
         [Required]
         [EmailAddress]
-        [SwaggerSchema("admin@school.vn")]
+        [SwaggerSchemaExample("admin@school.vn")]
         public string Email { get; set; }
         [Required]
         [MinLength(6)]
-        [SwaggerSchema("String_1")]
+        [SwaggerSchemaExample("String_1")]
         public string Password { get; set; }
-        [SwaggerSchema("true")]
+        [SwaggerSchemaExample("true")]
         public bool RememberMe { get; set; }
     }
 

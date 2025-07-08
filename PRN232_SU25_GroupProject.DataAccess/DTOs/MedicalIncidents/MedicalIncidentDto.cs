@@ -1,9 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicationGivens;
+using PRN232_SU25_GroupProject.DataAccess.Enums;
 
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents
 {
@@ -16,12 +12,10 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents
         public int NurseId { get; set; }
         public string NurseName { get; set; }
         public IncidentType Type { get; set; }
-        public string TypeDisplay => Type.ToString();
         public string Description { get; set; }
         public string Symptoms { get; set; }
         public string Treatment { get; set; }
         public IncidentSeverity Severity { get; set; }
-        public string SeverityDisplay => Severity.ToString();
         public bool ParentNotified { get; set; }
         public DateTime IncidentDate { get; set; }
         public List<MedicationGivenDto> MedicationsGiven { get; set; } = new List<MedicationGivenDto>();

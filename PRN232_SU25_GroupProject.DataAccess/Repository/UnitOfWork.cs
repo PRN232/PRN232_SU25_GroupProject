@@ -2,11 +2,9 @@
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace PRN232_SU25_GroupProject.DataAccess.Repositories
+
+namespace PRN232_SU25_GroupProject.DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
@@ -42,6 +40,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repositories
         public IGenericRepository<MedicalProfile> MedicalProfileRepository => GetRepository<MedicalProfile>();
         public IGenericRepository<MedicalIncident> MedicalIncidentRepository => GetRepository<MedicalIncident>();
         public IGenericRepository<Medication> MedicationRepository => GetRepository<Medication>();
+        public IGenericRepository<MedicationGiven> MedicationGivenRepository => GetRepository<MedicationGiven>();
         public IGenericRepository<StudentMedication> StudentMedicationRepository => GetRepository<StudentMedication>();
         public IGenericRepository<VaccinationCampaign> VaccinationCampaignRepository => GetRepository<VaccinationCampaign>();
         public IGenericRepository<VaccinationRecord> VaccinationRecordRepository => GetRepository<VaccinationRecord>();

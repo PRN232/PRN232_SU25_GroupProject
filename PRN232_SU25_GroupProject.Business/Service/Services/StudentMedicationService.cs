@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -21,121 +18,145 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<List<StudentMedicationDto>> GetStudentMedicationsAsync(int studentId)
-        {
-            var meds = await _unitOfWork.StudentMedicationRepository
-                .Query()
-                .Where(m => m.StudentId == studentId && m.IsApproved)
-                .ToListAsync();
 
+        // Create new student medication
+        public async Task<ApiResponse<StudentMedicationDto>> CreateStudentMedicationAsync(CreateStudentMedicationRequest request)
+        {
+            // Validate Student exists
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(request.StudentId);
+            if (student == null)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Không tìm thấy học sinh.");
+
+            // Validate Parent for authorization
+            var parent = await _unitOfWork.ParentRepository.GetByIdAsync(student.ParentId);
+            if (parent == null)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Học sinh không có phụ huynh hoặc phụ huynh không hợp lệ.");
+
+            // Check if the medication already exists for this student
+            var medicationExist = await _unitOfWork.StudentMedicationRepository.Query()
+                .AnyAsync(m => m.StudentId == request.StudentId && m.MedicationName == request.MedicationName && m.StartDate <= request.EndDate && m.EndDate >= request.StartDate);
+
+            if (medicationExist)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Đơn thuốc đã tồn tại cho học sinh này trong khoảng thời gian này.");
+
+            // Create the medication record
+            var medication = _mapper.Map<StudentMedication>(request);
+            medication.IsApproved = false; // By default, the medication will not be approved
+            await _unitOfWork.StudentMedicationRepository.AddAsync(medication);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Map DTO to return
+            var dto = _mapper.Map<StudentMedicationDto>(medication);
+
+            return ApiResponse<StudentMedicationDto>.SuccessResult(dto, "Đơn thuốc đã được tạo thành công.");
+        }
+
+        // Update student medication
+        public async Task<ApiResponse<StudentMedicationDto>> UpdateStudentMedicationAsync(int id, UpdateStudentMedicationRequest request)
+        {
+            // Find the medication to be updated
+            var medication = await _unitOfWork.StudentMedicationRepository.GetByIdAsync(id);
+            if (medication == null)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Không tìm thấy đơn thuốc.");
+
+            // Check if the student ID matches with the medication student
+            if (medication.StudentId != request.StudentId)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Học sinh không hợp lệ cho đơn thuốc này.");
+
+            // Validate Parent for authorization (same logic as in create)
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(request.StudentId);
+            var parent = await _unitOfWork.ParentRepository.GetByIdAsync(student.ParentId);
+            if (parent == null)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Phụ huynh không hợp lệ.");
+
+            // Update medication details
+            medication.MedicationName = request.MedicationName;
+            medication.Dosage = request.Dosage;
+            medication.Instructions = request.Instructions;
+            medication.AdministrationTime = request.AdministrationTime;
+            medication.StartDate = request.StartDate;
+            medication.EndDate = request.EndDate;
+            medication.IsApproved = request.IsApproved;
+
+            // Save changes
+            _unitOfWork.StudentMedicationRepository.Update(medication);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Map DTO to return
+            var dto = _mapper.Map<StudentMedicationDto>(medication);
+
+            return ApiResponse<StudentMedicationDto>.SuccessResult(dto, "Đơn thuốc đã được cập nhật thành công.");
+        }
+
+        // Delete student medication
+        public async Task<ApiResponse<bool>> DeleteStudentMedicationAsync(int id)
+        {
+            // Find the medication to be deleted
+            var medication = await _unitOfWork.StudentMedicationRepository.GetByIdAsync(id);
+            if (medication == null)
+                return ApiResponse<bool>.ErrorResult("Không tìm thấy đơn thuốc.");
+
+            // Check if the student ID matches with the medication student
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(medication.StudentId);
+            if (student == null)
+                return ApiResponse<bool>.ErrorResult("Học sinh không hợp lệ.");
+
+            // Delete the medication record
+            _unitOfWork.StudentMedicationRepository.Delete(medication);
+            await _unitOfWork.SaveChangesAsync();
+
+            return ApiResponse<bool>.SuccessResult(true, "Đơn thuốc đã được xóa thành công.");
+        }
+
+        // Get all medications for a student
+        public async Task<ApiResponse<List<StudentMedicationDto>>> GetMedicationsByStudentAsync(int studentId)
+        {
+            // Validate if student exists
             var student = await _unitOfWork.StudentRepository.GetByIdAsync(studentId);
-            var parent = await _unitOfWork.GetRepository<Parent>()
-                .GetByIdAsync(student?.ParentId ?? 0);
+            if (student == null)
+                return ApiResponse<List<StudentMedicationDto>>.ErrorResult("Không tìm thấy học sinh.");
 
-            return meds.Select(m =>
-            {
-                var dto = _mapper.Map<StudentMedicationDto>(m);
-                dto.StudentName = student?.FullName;
-                dto.StudentCode = student?.StudentCode;
-                dto.ParentName = parent?.FullName;
-                return dto;
-            }).ToList();
-        }
-
-        public async Task<StudentMedicationDto> SubmitMedicationRequestAsync(SubmitMedicationRequest request)
-        {
-            var entity = _mapper.Map<StudentMedication>(request);
-            entity.IsApproved = false;
-
-            await _unitOfWork.StudentMedicationRepository.AddAsync(entity);
-            await _unitOfWork.SaveChangesAsync();
-
-            // Map sang DTO để trả về đúng kiểu
-            var student = await _unitOfWork.StudentRepository.GetByIdAsync(entity.StudentId);
-            var parent = await _unitOfWork.GetRepository<Parent>().GetByIdAsync(entity.ParentId);
-
-            var dto = _mapper.Map<StudentMedicationDto>(entity);
-            dto.StudentName = student?.FullName;
-            dto.StudentCode = student?.StudentCode;
-            dto.ParentName = parent?.FullName;
-
-            return dto;
-        }
-
-
-        public async Task<List<StudentMedicationDto>> GetPendingApprovalsAsync()
-        {
-            var meds = await _unitOfWork.StudentMedicationRepository
-                .Query()
-                .Where(m => !m.IsApproved)
+            // Fetch all medications for the student
+            var medications = await _unitOfWork.StudentMedicationRepository.Query()
+                .Where(m => m.StudentId == studentId)
                 .ToListAsync();
 
-            // Lấy thông tin Student/Parent nếu cần
-            var studentIds = meds.Select(m => m.StudentId).Distinct().ToList();
-            var parentIds = meds.Select(m => m.ParentId).Distinct().ToList();
-
-            var students = await _unitOfWork.StudentRepository.Query()
-                .Where(s => studentIds.Contains(s.Id))
-                .ToDictionaryAsync(s => s.Id);
-
-            var parents = await _unitOfWork.GetRepository<Parent>().Query()
-                .Where(p => parentIds.Contains(p.Id))
-                .ToDictionaryAsync(p => p.Id);
-
-            var dtoList = meds.Select(m =>
-            {
-                var dto = _mapper.Map<StudentMedicationDto>(m);
-
-                if (students.TryGetValue(m.StudentId, out var student))
-                {
-                    dto.StudentName = student.FullName;
-                    dto.StudentCode = student.StudentCode;
-                }
-
-                if (parents.TryGetValue(m.ParentId, out var parent))
-                {
-                    dto.ParentName = parent.FullName;
-                }
-
-                return dto;
-            }).ToList();
-
-            return dtoList;
+            // Map to DTOs
+            var dtos = _mapper.Map<List<StudentMedicationDto>>(medications);
+            return ApiResponse<List<StudentMedicationDto>>.SuccessResult(dtos);
         }
 
-
-        public async Task<bool> ApproveMedicationAsync(int requestId, int nurseId)
+        // Approve medication
+        public async Task<ApiResponse<StudentMedicationDto>> ApproveStudentMedicationAsync(int id)
         {
-            var medication = await _unitOfWork.StudentMedicationRepository.GetByIdAsync(requestId);
-            if (medication == null || medication.IsApproved)
-                return false;
+            var medication = await _unitOfWork.StudentMedicationRepository.GetByIdAsync(id);
+            if (medication == null)
+                return ApiResponse<StudentMedicationDto>.ErrorResult("Không tìm thấy đơn thuốc.");
 
+            // Approve the medication
             medication.IsApproved = true;
+            _unitOfWork.StudentMedicationRepository.Update(medication);
             await _unitOfWork.SaveChangesAsync();
-            return true;
+
+            var dto = _mapper.Map<StudentMedicationDto>(medication);
+            return ApiResponse<StudentMedicationDto>.SuccessResult(dto, "Đơn thuốc đã được phê duyệt.");
         }
-
-        
-
-        public async Task<bool> AdministerMedicationAsync(AdministerMedicationRequest request)
+        public async Task<bool> CanParentAccessMedication(int userId, int studentId)
         {
-            var studentMedication = await _unitOfWork.StudentMedicationRepository
-                .GetByIdAsync(request.StudentMedicationId);
+            var parentId = await _unitOfWork.ParentRepository.Query()
+                .Where(p => p.UserId == userId)
+                .Select(p => p.Id)
+                .FirstOrDefaultAsync();
+            // Check if the parent is the parent of the student.
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(studentId);
 
-            if (studentMedication == null || !studentMedication.IsApproved)
-                return false;
-
-            var medicationGiven = new MedicationGiven
+            if (student == null)
             {
-                IncidentId = 0, // Optional: if not related to incident
-                MedicationId = 0, // Not used in StudentMedication — only name exists
-                Dosage = studentMedication.Dosage,
-                GivenAt = request.AdministeredAt
-            };
-
-            await _unitOfWork.GetRepository<MedicationGiven>().AddAsync(medicationGiven);
-            await _unitOfWork.SaveChangesAsync();
-            return true;
+                return false; // If the student does not exist, return false.
+            }
+            // Check if the parentId matches the student's ParentId.
+            return student.ParentId == parentId;
         }
+
     }
 }
