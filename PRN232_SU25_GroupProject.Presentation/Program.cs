@@ -21,9 +21,18 @@ var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? builder.Conf
 var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? builder.Configuration["JwtSettings:Audience"];
 var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? builder.Configuration["JwtSettings:SecretKey"];
 
+// === Load env variables ===
+builder.Configuration.AddEnvironmentVariables();
+
 // === DB Context ===
 builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    // Lấy từ biến môi trường, nếu không có thì fallback về appsettings
+    var connStr = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+                 ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+    options.UseSqlServer(connStr);
+});
 
 // === Identity ===
 builder.Services.AddIdentity<User, IdentityRole<int>>()
