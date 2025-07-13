@@ -29,6 +29,7 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             ////////////////////////////////////////////////////
             CreateMap<User, UserDto>()
     .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
     .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
             CreateMap<CreateUserRequest, User>();
             CreateMap<UpdateUserRequest, User>();
