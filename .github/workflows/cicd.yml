@@ -28,6 +28,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DH_REPO_NAME }}:latest
         uses: docker/build-push-action@v6
         with:
           context: .
