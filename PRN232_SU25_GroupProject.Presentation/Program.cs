@@ -11,14 +11,36 @@ using PRN232_SU25_GroupProject.Presentation.Initialization;
 using System.Reflection;
 using System.Text;
 
+// Load .env
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// === JWT from environment or fallback to appsettings ===
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? builder.Configuration["JwtSettings:Issuer"];
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? builder.Configuration["JwtSettings:Audience"];
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? builder.Configuration["JwtSettings:SecretKey"];
+
+// === Load env variables ===
+builder.Configuration.AddEnvironmentVariables();
+
+// === DB Context ===
+builder.Services.AddDbContext<SchoolMedicalDbContext>(options =>
+{
+    // Lấy từ biến môi trường, nếu không có thì fallback về appsettings
+    var connStr = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+                 ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+    options.UseSqlServer(connStr);
+});
+
+// === Identity ===
 builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<SchoolMedicalDbContext>()
     .AddDefaultTokenProviders();
+
+// === Custom services ===
 builder.Services.AddApplicationService();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -29,6 +51,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
+// === Swagger ===
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SMMS API", Version = "v1" });
@@ -61,29 +84,30 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 });
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
+// === JWT Authentication ===
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(options =>
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-        };
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret))
+    };
+});
+
 builder.Services.AddAuthorization();
 
+// === CORS ===
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -96,11 +120,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// === Dev Swagger ===
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseCors();
@@ -109,13 +131,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// === Seed DB ===
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SchoolMedicalDbContext>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    context.Database.Migrate(); // áp dụng các migration mới nhất
-    DataSeeder.SeedDatabase(context);                    // seed các bảng
-    await DataSeeder.SeedPasswordsAsync(userManager);    // gán mật khẩu
+    context.Database.Migrate();
+    DataSeeder.SeedDatabase(context);
+    await DataSeeder.SeedPasswordsAsync(userManager);
 }
 
 app.Run();

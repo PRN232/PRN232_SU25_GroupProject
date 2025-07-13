@@ -91,10 +91,15 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
             CreateMap<StudentMedication, StudentMedicationDto>();
+           
+              
 
             CreateMap<AddMedicationRequest, Medication>();
-            CreateMap<UpdateMedicationRequest, Medication>();
-            CreateMap<AdministerMedicationRequest, StudentMedication>();
+
+            CreateMap<MedicalConsent, MedicalConsentDto>()
+                .ForMember(dest => dest.StudentName, opt => opt.Ignore());
+            CreateMap<CreateMedicalConsentRequest, MedicalConsent>();
+            CreateMap<UpdateMedicalConsentRequest, MedicalConsent>();
             CreateMap<ApproveStudentMedicationRequest, StudentMedication>();
             CreateMap<UpdateStudentMedicationRequest, StudentMedication>();
             CreateMap<CreateStudentMedicationRequest, StudentMedication>();
@@ -105,11 +110,7 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<VaccinationCampaign, VaccinationCampaignDto>();
             CreateMap<CreateVaccinationCampaignRequest, VaccinationCampaign>();
             CreateMap<UpdateVaccinationCampaignRequest, VaccinationCampaign>();
-
-            CreateMap<MedicalConsent, MedicalConsentDto>()
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore());
-            CreateMap<CreateMedicalConsentRequest, MedicalConsent>();
-            CreateMap<UpdateMedicalConsentRequest, MedicalConsent>();
+            CreateMap<MedicalConsent, MedicalConsentDto>();
 
             CreateMap<VaccinationRecord, VaccinationRecordDto>();
             CreateMap<RecordVaccinationRequest, VaccinationRecord>();

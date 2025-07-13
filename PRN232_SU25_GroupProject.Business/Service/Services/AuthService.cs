@@ -153,8 +153,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
         private string GenerateJwtToken(User user, out DateTime expiresAt)
         {
-            var jwtSection = _configuration.GetSection("JwtSettings");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["SecretKey"]));
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? _configuration["JwtSettings:Issuer"];
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? _configuration["JwtSettings:Audience"];
+            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? _configuration["JwtSettings:SecretKey"];
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             expiresAt = DateTime.Now.AddHours(20);
 
@@ -166,11 +169,9 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
         new Claim("uid", user.Id.ToString())
     };
 
-            var issuer = jwtSection["Issuer"];
-            var audience = jwtSection["Audience"];
             Console.WriteLine($"issuer: {issuer}");
             Console.WriteLine($"audience: {audience}");
-            Console.WriteLine($"keyD: {jwtSection["SecretKey"]}");
+            Console.WriteLine($"keyD: {secretKey}");
 
             var token = new JwtSecurityToken(
                 issuer: issuer,
