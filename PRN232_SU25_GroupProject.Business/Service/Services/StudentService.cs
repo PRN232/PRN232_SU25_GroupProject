@@ -49,6 +49,11 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             return ApiResponse<StudentDto>.SuccessResult(_mapper.Map<StudentDto>(studentWithRelations), "Tạo học sinh thành công.");
         }
 
+        public async Task<ApiResponse<List<StudentDto>>> GetAllStudentsAsync()
+        {
+            List<Student> students = (await _unitOfWork.StudentRepository.GetAllAsync()).ToList();
+            return ApiResponse<List<StudentDto>>.SuccessResult(_mapper.Map<List<StudentDto>>(students));
+        }
 
         public async Task<ApiResponse<StudentDto>> GetStudentByIdAsync(int id)
         {

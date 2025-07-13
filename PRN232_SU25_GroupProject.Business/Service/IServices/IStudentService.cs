@@ -10,6 +10,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<List<StudentDto>>> GetStudentsByClassAsync(string className);
         Task<ApiResponse<List<StudentDto>>> GetStudentsByParentAsync(int parentId);
         Task<ApiResponse<bool>> UpdateStudentAsync(int id, UpdateStudentRequest request);
+        Task<ApiResponse<List<StudentDto>>> GetAllStudentsAsync();
     }
 
 }

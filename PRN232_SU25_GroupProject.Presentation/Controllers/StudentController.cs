@@ -51,6 +51,13 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             if (!response.Success) return NotFound(response);
             return Ok(response);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllStudents()
+        {
+            var response = await _studentService.GetAllStudentsAsync();
+            if (!response.Success) return NotFound(response);
+            return Ok(response);
+        }
     }
 
 }
