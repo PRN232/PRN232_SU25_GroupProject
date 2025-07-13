@@ -90,18 +90,8 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<Medication, MedicationDto>().ReverseMap();
 
             CreateMap<StudentMedication, StudentMedicationDto>();
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
-                .ForMember(dest => dest.StudentName, opt => opt.Ignore())
-                .ForMember(dest => dest.StudentCode, opt => opt.Ignore())
-                .ForMember(dest => dest.ParentName, opt => opt.Ignore());
+           
+              
 
             CreateMap<AddMedicationRequest, Medication>();
 
@@ -120,7 +110,6 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<CreateVaccinationCampaignRequest, VaccinationCampaign>();
             CreateMap<UpdateVaccinationCampaignRequest, VaccinationCampaign>();
             CreateMap<MedicalConsent, MedicalConsentDto>();
-            CreateMap<SubmitConsentRequest, MedicalConsent>();
 
             CreateMap<VaccinationRecord, VaccinationRecordDto>();
             CreateMap<RecordVaccinationRequest, VaccinationRecord>();
