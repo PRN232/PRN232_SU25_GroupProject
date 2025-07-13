@@ -6,7 +6,7 @@ using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Enums;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
+using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {
@@ -32,7 +32,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             var trueconsents = healthconsents.Where(s => s.ConsentGiven == true);
             var dtos = campaigns.Select(c =>
             {
-                var totalStudents = trueconsents.Count(s => s.CampaignId == c.Id);
+
                 var campaignResults = results.Where(r => r.CampaignId == c.Id).ToList();
                 var completed = campaignResults.Count;
                 var needFollowup = campaignResults.Count(r => r.RequiresFollowup);
@@ -45,7 +45,8 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                     ScheduledDate = c.ScheduledDate,
                     TargetGrades = c.TargetGrades,
                     Status = c.Status,
-                    TotalStudents = totalStudents,
+                    ConsentReceived = trueconsents.Count(s => s.CampaignId == c.Id),
+                    TotalStudents = healthconsents.Count(s => s.CampaignId == c.Id),
                     CheckupsCompleted = completed,
                     RequiringFollowup = needFollowup
                 };
@@ -60,8 +61,9 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 return ApiResponse<HealthCheckupCampaignDto>.ErrorResult("Không tìm thấy chiến dịch.");
             var results = await _unitOfWork.HealthCheckupResultRepository.GetAllAsync();
             var healthconsents = await _unitOfWork.MedicalConsentRepository.Query()
-                .Where(s => s.ConsentType == ConsentType.HealthCheckup && s.ConsentGiven == true)
+                .Where(s => s.ConsentType == ConsentType.HealthCheckup)
                 .ToListAsync();
+            var trueconsents = healthconsents.Where(s => s.ConsentGiven == true);
             var totalstudent = healthconsents.Count(s => s.CampaignId == campaign.Id);
             var completed = results.Count(r => r.CampaignId == campaign.Id);
             var data = new HealthCheckupCampaignDto
@@ -72,6 +74,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 ScheduledDate = campaign.ScheduledDate,
                 TargetGrades = campaign.TargetGrades,
                 Status = campaign.Status,
+                ConsentReceived = trueconsents.Count(s => s.CampaignId == campaign.Id),
                 TotalStudents = totalstudent,
                 CheckupsCompleted = completed,
                 RequiringFollowup = results.Count(r => r.CampaignId == campaign.Id && r.RequiresFollowup),

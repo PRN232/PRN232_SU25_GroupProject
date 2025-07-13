@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Authentication;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
 {
@@ -10,7 +9,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
     /// Xử lý xác thực & tài khoản người dùng
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -18,7 +17,39 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         {
             _authService = authService;
         }
-
+        /// <summary>
+        /// Đăng nhập người dùng và trả về token
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/auth/login
+        ///     Chọn 1 trong các tài khoản sau để đăng nhập:
+        ///     *****Tài khoản role Admin*****
+        ///     {
+        ///        "email": "admin@school.vn",
+        ///        "password": "String_1",
+        ///        "rememberMe": true
+        ///     }
+        ///     *****Tài khoản role Manager*****
+        ///     {
+        ///        "email": "manager@school.vn",
+        ///        "password": "String_1",
+        ///        "rememberMe": true
+        ///     }
+        ///     *****Tài khoản role Nurse*****
+        ///     {
+        ///        "email": "nurse1@school.vn",
+        ///        "password": "String_1",
+        ///        "rememberMe": true
+        ///     }
+        ///     *****Tài khoản role Parent*****
+        ///     {
+        ///        "email": "p1@parent.vn",
+        ///        "password": "String_1",
+        ///        "rememberMe": true
+        ///     }
+        /// </remarks>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

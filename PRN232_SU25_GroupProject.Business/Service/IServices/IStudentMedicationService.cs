@@ -1,16 +1,15 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.DTOs.StudentMedications;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {
     public interface IStudentMedicationService
     {
-        Task<StudentMedicationDto> SubmitMedicationRequestAsync(SubmitMedicationRequest request);
-        Task<List<StudentMedicationDto>> GetPendingApprovalsAsync();
-        Task<bool> ApproveMedicationAsync(int requestId, int nurseId);
-        Task<List<StudentMedicationDto>> GetStudentMedicationsAsync(int studentId);
-        Task<bool> AdministerMedicationAsync(AdministerMedicationRequest request);
+        Task<ApiResponse<StudentMedicationDto>> CreateStudentMedicationAsync(CreateStudentMedicationRequest request);
+        Task<ApiResponse<StudentMedicationDto>> UpdateStudentMedicationAsync(int id, UpdateStudentMedicationRequest request);
+        Task<ApiResponse<bool>> DeleteStudentMedicationAsync(int id);
+        Task<ApiResponse<List<StudentMedicationDto>>> GetMedicationsByStudentAsync(int studentId);
+        Task<ApiResponse<StudentMedicationDto>> ApproveStudentMedicationAsync(int id);
+        Task<bool> CanParentAccessMedication(int parentId, int studentId);
     }
 }

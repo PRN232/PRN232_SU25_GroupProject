@@ -9,7 +9,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<StudentDto>> GetStudentByIdAsync(int id);
         Task<ApiResponse<List<StudentDto>>> GetStudentsByClassAsync(string className);
         Task<ApiResponse<List<StudentDto>>> GetStudentsByParentAsync(int parentId);
-        Task<ApiResponse<bool>> UpdateStudentAsync(int id,UpdateStudentRequest request);
+        Task<ApiResponse<bool>> UpdateStudentAsync(int id, UpdateStudentRequest request);
     }
 
 }

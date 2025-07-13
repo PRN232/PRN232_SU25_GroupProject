@@ -1,12 +1,7 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.Entities;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PRN232_SU25_GroupProject.DataAccess.Repositories
+namespace PRN232_SU25_GroupProject.DataAccess.Repository
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -18,6 +13,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repositories
         IGenericRepository<MedicalProfile> MedicalProfileRepository { get; }
         IGenericRepository<MedicalIncident> MedicalIncidentRepository { get; }
         IGenericRepository<Medication> MedicationRepository { get; }
+        IGenericRepository<MedicationGiven> MedicationGivenRepository { get; }
         IGenericRepository<StudentMedication> StudentMedicationRepository { get; }
         IGenericRepository<VaccinationCampaign> VaccinationCampaignRepository { get; }
         IGenericRepository<VaccinationRecord> VaccinationRecordRepository { get; }

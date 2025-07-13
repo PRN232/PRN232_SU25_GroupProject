@@ -4,8 +4,7 @@ using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
 using PRN232_SU25_GroupProject.DataAccess.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
-using PRN232_SU25_GroupProject.DataAccess.Repositories;
-
+using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services
 {

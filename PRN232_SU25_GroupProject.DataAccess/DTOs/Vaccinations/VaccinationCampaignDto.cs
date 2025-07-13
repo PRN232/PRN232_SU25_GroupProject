@@ -1,9 +1,4 @@
 ﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
 {
@@ -19,6 +14,8 @@ namespace PRN232_SU25_GroupProject.DataAccess.DTOs.Vaccinations
         public int TotalStudents { get; set; }
         public int ConsentReceived { get; set; }
         public int VaccinationsCompleted { get; set; }
+        public double CompletionRate => TotalStudents > 0 ? (double)VaccinationsCompleted / TotalStudents * 100 : 0;
         public double ConsentRate => TotalStudents > 0 ? (double)ConsentReceived / TotalStudents * 100 : 0;
+
     }
 }

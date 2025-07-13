@@ -46,7 +46,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         ///        "campaignName": "Test Update Campaign",
         ///        "checkupTypes": "Không có",
         ///        "scheduledDate": "2025-11-03T06:04:33.573Z",
-        ///        "targetGrades": "Khối 9"
+        ///        "targetGrades": "Khối 9",
         ///        "status": 2
         ///     }
         ///

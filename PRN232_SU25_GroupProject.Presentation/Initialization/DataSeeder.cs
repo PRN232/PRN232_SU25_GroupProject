@@ -201,7 +201,6 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     AdministrationTime = new TimeSpan(8, 0, 0),
                     StartDate = DateTime.Today,
                     EndDate = DateTime.Today.AddDays(30),
-                    ParentId = stuDict["STU002"].ParentId,
                     IsApproved = true
                 },
                 new StudentMedication
@@ -213,7 +212,6 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     AdministrationTime = new TimeSpan(0, 0, 0),
                     StartDate = DateTime.Today,
                     EndDate = DateTime.Today.AddMonths(6),
-                    ParentId = stuDict["STU003"].ParentId,
                     IsApproved = true
                 }
             );
@@ -296,7 +294,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                 CampaignName = "Tiêm cúm mùa 2025",
                 VaccineType = "Cúm A/B",
                 ScheduledDate = DateTime.Today.AddDays(10),
-                TargetGrades = "Khối 1-6",
+                TargetGrades = "3B2, 3C1",
                 Status = VaccinationStatus.Planned
             });
             context.SaveChanges();
@@ -391,7 +389,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                 CampaignName = "Khám sức khỏe Đầu Năm 2025-2026",
                 CheckupTypes = "Thị lực, Chiều cao, Cân nặng, Huyết áp",
                 ScheduledDate = DateTime.Today.AddMonths(2),
-                TargetGrades = "Khối 1-9",
+                TargetGrades = "2B3, 7B3",
                 Status = CheckupStatus.Planned
             });
             context.SaveChanges();

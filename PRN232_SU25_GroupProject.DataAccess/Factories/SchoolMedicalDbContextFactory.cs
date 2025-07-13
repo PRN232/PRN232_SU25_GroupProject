@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using PRN232_SU25_GroupProject.DataAccess.Context;
-using System.IO;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Factories
 {
