@@ -46,43 +46,43 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             context.SaveChanges();
         }
 
-        public static void SeedVisionHearing(SchoolMedicalDbContext context)
-        {
-            if (context.VisionHearings.Any()) return;
+        //public static void SeedVisionHearing(SchoolMedicalDbContext context)
+        //{
+        //    if (context.VisionHearings.Any()) return;
 
-            var medicalprofile = context.MedicalProfiles.ToList();
+        //    var medicalprofile = context.MedicalProfiles.ToList();
 
-            context.VisionHearings.AddRange(
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[0].Id,
-                    VisionLeft = "10/10",
-                    VisionRight = "10/10",
-                    HearingLeft = "Bình thường",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-1)
-                },
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[1].Id,
-                    VisionLeft = "8/10",
-                    VisionRight = "9/10",
-                    HearingLeft = "Bình thường",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-1)
-                },
-                new VisionHearing
-                {
-                    MedicalProfileId = medicalprofile[3].Id,
-                    VisionLeft = "10/10",
-                    VisionRight = "9/10",
-                    HearingLeft = "Nghe kém nhẹ",
-                    HearingRight = "Bình thường",
-                    LastChecked = DateTime.Today.AddMonths(-2)
-                }
-            );
+        //    context.VisionHearings.AddRange(
+        //        new VisionHearing
+        //        {
+        //            MedicalProfileId = medicalprofile[0].Id,
+        //            VisionLeft = "10/10",
+        //            VisionRight = "10/10",
+        //            HearingLeft = "Bình thường",
+        //            HearingRight = "Bình thường",
+        //            LastChecked = DateTime.Today.AddMonths(-1)
+        //        },
+        //        new VisionHearing
+        //        {
+        //            MedicalProfileId = medicalprofile[1].Id,
+        //            VisionLeft = "8/10",
+        //            VisionRight = "9/10",
+        //            HearingLeft = "Bình thường",
+        //            HearingRight = "Bình thường",
+        //            LastChecked = DateTime.Today.AddMonths(-1)
+        //        },
+        //        new VisionHearing
+        //        {
+        //            MedicalProfileId = medicalprofile[3].Id,
+        //            VisionLeft = "10/10",
+        //            VisionRight = "9/10",
+        //            HearingLeft = "Nghe kém nhẹ",
+        //            HearingRight = "Bình thường",
+        //            LastChecked = DateTime.Today.AddMonths(-2)
+        //        }
+        //    );
 
-            context.SaveChanges();
-        }
+        //    context.SaveChanges();
+        //}
     }
 }

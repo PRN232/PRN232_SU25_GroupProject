@@ -17,7 +17,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                 CampaignName = "Tiêm cúm mùa 2025",
                 VaccineType = "Cúm A/B",
                 ScheduledDate = DateTime.Today.AddDays(10),
-                TargetGrades = "Khối 1-6",
+                TargetGrades = "5A1, 3B2, 4C1, 3C1",
                 Status = VaccinationStatus.Planned
             });
             context.SaveChanges();
@@ -27,7 +27,9 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
         {
             if (context.VaccinationRecords.Any()) return;
 
-            var consents = context.MedicalConsents.Take(2).ToList();
+            var consents = context.MedicalConsents
+                .Where(c => c.ConsentType == ConsentType.Vaccine && c.ConsentGiven)
+                .ToList();
             var nurse = context.SchoolNurses.FirstOrDefault();
             if (!consents.Any() || nurse == null) return;
 
@@ -42,7 +44,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     BatchNumber = "FLU2025-001",
                     VaccinationDate = DateTime.Today.AddDays(-1),
                     SideEffects = "Đau cánh tay nhẹ",
-                    Result = VaccinationResult.Completed,
+                    Result = VaccinationResult.Completed
                 });
             }
 

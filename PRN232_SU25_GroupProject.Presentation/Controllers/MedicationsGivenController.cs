@@ -17,7 +17,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _medicationsGivenService.GetAllMedicationsGivenAsync();
@@ -25,7 +25,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _medicationsGivenService.GetMedicationsGivenByIdAsync(id);
@@ -34,7 +34,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> Create([FromBody] CreateMedicationsGivenRequest request)
         {
             var result = await _medicationsGivenService.CreateMedicationsGivenAsync(request);
@@ -43,7 +43,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateMedicationsGivenRequest request)
         {
             var result = await _medicationsGivenService.UpdateMedicationsGivenAsync(id, request);
@@ -52,7 +52,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _medicationsGivenService.DeleteMedicationsGivenAsync(id);

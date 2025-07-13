@@ -20,7 +20,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
             if (vaccineCampaign == null || checkupCampaign == null || !students.Any() || !parents.Any()) return;
 
             context.MedicalConsents.AddRange(
-                // Vaccine consents for STU001 and STU002
+                // Vaccine consents
                 new MedicalConsent
                 {
                     ConsentType = ConsentType.Vaccine,
@@ -43,7 +43,51 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     ParentSignature = parents[students.First(s => s.StudentCode == "STU002").ParentId].FullName,
                     Note = "Đồng ý tiêm chủng cúm mùa"
                 },
-                // Health checkup consents for STU003 and STU004
+                new MedicalConsent
+                {
+                    ConsentType = ConsentType.Vaccine,
+                    CampaignId = vaccineCampaign.Id,
+                    StudentId = students.First(s => s.StudentCode == "STU003").Id,
+                    ParentId = students.First(s => s.StudentCode == "STU003").ParentId,
+                    ConsentGiven = false,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parents[students.First(s => s.StudentCode == "STU003").ParentId].FullName,
+                    Note = "Không đồng ý do dị ứng vắc-xin"
+                },
+                new MedicalConsent
+                {
+                    ConsentType = ConsentType.Vaccine,
+                    CampaignId = vaccineCampaign.Id,
+                    StudentId = students.First(s => s.StudentCode == "STU004").Id,
+                    ParentId = students.First(s => s.StudentCode == "STU004").ParentId,
+                    ConsentGiven = true,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parents[students.First(s => s.StudentCode == "STU004").ParentId].FullName,
+                    Note = "Đồng ý tiêm chủng cúm mùa"
+                },
+                // Health checkup consents
+                new MedicalConsent
+                {
+                    ConsentType = ConsentType.HealthCheckup,
+                    CampaignId = checkupCampaign.Id,
+                    StudentId = students.First(s => s.StudentCode == "STU001").Id,
+                    ParentId = students.First(s => s.StudentCode == "STU001").ParentId,
+                    ConsentGiven = true,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parents[students.First(s => s.StudentCode == "STU001").ParentId].FullName,
+                    Note = "Đồng ý khám sức khỏe định kỳ"
+                },
+                new MedicalConsent
+                {
+                    ConsentType = ConsentType.HealthCheckup,
+                    CampaignId = checkupCampaign.Id,
+                    StudentId = students.First(s => s.StudentCode == "STU002").Id,
+                    ParentId = students.First(s => s.StudentCode == "STU002").ParentId,
+                    ConsentGiven = false,
+                    ConsentDate = DateTime.Today,
+                    ParentSignature = parents[students.First(s => s.StudentCode == "STU002").ParentId].FullName,
+                    Note = "Không đồng ý do lịch trình cá nhân"
+                },
                 new MedicalConsent
                 {
                     ConsentType = ConsentType.HealthCheckup,
@@ -61,10 +105,10 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     CampaignId = checkupCampaign.Id,
                     StudentId = students.First(s => s.StudentCode == "STU004").Id,
                     ParentId = students.First(s => s.StudentCode == "STU004").ParentId,
-                    ConsentGiven = false,
+                    ConsentGiven = true,
                     ConsentDate = DateTime.Today,
                     ParentSignature = parents[students.First(s => s.StudentCode == "STU004").ParentId].FullName,
-                    Note = "Không đồng ý khám sức khỏe do lịch trình cá nhân"
+                    Note = "Đồng ý khám sức khỏe định kỳ"
                 }
             );
 
