@@ -16,7 +16,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Manager,Admin,Parent")]
+        [Authorize(Roles = "Manager,Admin,Parent,SchoolNurse")]
         public async Task<IActionResult> GetAll()
         {
             var res = await _campaignService.GetAllCampaignsAsync();
