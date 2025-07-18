@@ -20,6 +20,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<SchoolMedicalDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddApplicationService();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -107,6 +109,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.ApplyMigrations();
 
 using (var scope = app.Services.CreateScope())
 {
