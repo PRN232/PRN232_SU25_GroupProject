@@ -42,6 +42,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>()
 
 // === Custom services ===
 builder.Services.AddApplicationService();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -130,6 +132,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.ApplyMigrations();
 
 // === Seed DB ===
 using (var scope = app.Services.CreateScope())
