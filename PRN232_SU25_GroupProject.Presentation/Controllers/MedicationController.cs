@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PRN232_SU25_GroupProject.Business.DTOs.Medications;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
 {

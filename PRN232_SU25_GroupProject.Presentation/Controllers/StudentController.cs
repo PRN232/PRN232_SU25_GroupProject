@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PRN232_SU25_GroupProject.Business.DTOs.Students;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
 {

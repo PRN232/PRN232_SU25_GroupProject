@@ -1,4 +1,4 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Notifications;
+﻿using PRN232_SU25_GroupProject.Business.DTOs.Notifications;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {

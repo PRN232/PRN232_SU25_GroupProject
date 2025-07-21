@@ -1,5 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Medications;
+﻿using PRN232_SU25_GroupProject.Business.DTOs.Medications;
+using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {

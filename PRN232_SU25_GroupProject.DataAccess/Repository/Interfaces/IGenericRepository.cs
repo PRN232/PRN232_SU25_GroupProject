@@ -1,4 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+﻿using Microsoft.AspNetCore.OData.Results;
+using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 using System.Linq.Expressions;
 
 namespace PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces

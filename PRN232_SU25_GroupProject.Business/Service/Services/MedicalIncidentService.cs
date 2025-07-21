@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PRN232_SU25_GroupProject.Business.DTOs.MedicalIncidents;
+using PRN232_SU25_GroupProject.Business.DTOs.MedicationGivens;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicalIncidents;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.MedicationGivens;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
+using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 using PRN232_SU25_GroupProject.DataAccess.Repository;
 
 namespace PRN232_SU25_GroupProject.Business.Service.Services

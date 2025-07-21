@@ -1,6 +1,6 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Parents;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Students;
+﻿using PRN232_SU25_GroupProject.Business.DTOs.Parents;
+using PRN232_SU25_GroupProject.Business.DTOs.Students;
+using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 
 namespace PRN232_SU25_GroupProject.Business.Service.IServices
 {

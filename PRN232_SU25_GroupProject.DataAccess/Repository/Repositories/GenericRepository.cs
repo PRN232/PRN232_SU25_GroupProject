@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.OData.Results;
+using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.DataAccess.Context;
-using PRN232_SU25_GroupProject.DataAccess.DTOs.Common;
+using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 using PRN232_SU25_GroupProject.DataAccess.Repository.Interfaces;
 using System.Linq.Expressions;
 
@@ -56,7 +57,7 @@ namespace PRN232_SU25_GroupProject.DataAccess.Repository.Repositories
             Expression<Func<T, bool>> filter,
             int pageIndex,
             int pageSize,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "")
         {
             IQueryable<T> query = _dbSet.Where(filter);
