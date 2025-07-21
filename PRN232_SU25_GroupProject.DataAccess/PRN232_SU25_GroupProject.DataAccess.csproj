@@ -6,12 +6,6 @@
 		<Nullable>enable</Nullable>
 
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="DTOs\CreateMedicalConsentRequest\**" />
-	  <EmbeddedResource Remove="DTOs\CreateMedicalConsentRequest\**" />
-	  <None Remove="DTOs\CreateMedicalConsentRequest\**" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
@@ -32,9 +26,6 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="DTOs\Users\" />
 	</ItemGroup>
 
 </Project>
