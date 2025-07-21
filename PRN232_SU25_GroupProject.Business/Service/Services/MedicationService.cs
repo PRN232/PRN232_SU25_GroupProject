@@ -45,12 +45,33 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             if (medication == null)
                 return ApiResponse<MedicationDto>.ErrorResult("Không tìm thấy thuốc.");
 
-            // Update medication details
-            _mapper.Map(request, medication);
+            //Update medication details
+
+            //_mapper.Map(request, medication);
+            medication.Name = request.Name;
+            medication.Description = request.Description;
+            medication.Type = request.Type;
+            medication.StockQuantity = request.StockQuantity;
+            medication.ExpiryDate = request.ExpiryDate;
+            medication.StorageInstructions = request.StorageInstructions;
             _unitOfWork.MedicationRepository.Update(medication);
             await _unitOfWork.SaveChangesAsync();
 
-            var dto = _mapper.Map<MedicationDto>(medication);
+            //var dto = _mapper.Map<MedicationDto>(medication);
+            var dto = new MedicationDto
+            {
+                Id = medication.Id,
+                Name = medication.Name,
+                Description = medication.Description,
+                Type = medication.Type,
+                StockQuantity = medication.StockQuantity,
+                ExpiryDate = medication.ExpiryDate,
+                StorageInstructions = medication.StorageInstructions
+            };
+
+
+
+
             return ApiResponse<MedicationDto>.SuccessResult(dto, "Cập nhật thuốc thành công.");
         }
 
