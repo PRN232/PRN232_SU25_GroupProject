@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PRN232_SU25_GroupProject.Business.Dtos.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
@@ -34,6 +35,40 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             dto.StudentCode = student?.StudentCode;
             dto.CampaignName = campaign?.CampaignName;
             dto.NurseName = nurse?.FullName;
+
+            return ApiResponse<HealthCheckupResultDto>.SuccessResult(dto, "Ghi nhận kết quả thành công!");
+        }
+
+        public async Task<ApiResponse<HealthCheckupResultDto>> RecordCheckupResultParentAsync(RecordCheckupRequestParent request)
+        {
+            var student = await _unitOfWork.StudentRepository.GetByIdAsync(request.StudentId);
+            if (student == null)
+                return ApiResponse<HealthCheckupResultDto>.ErrorResult("Không tìm thấy học sinh.");
+
+            var campaign = await _unitOfWork.HealthCheckupCampaignRepository
+                .Query().FirstOrDefaultAsync();
+            if (campaign == null)
+                return ApiResponse<HealthCheckupResultDto>.ErrorResult("Không có chiến dịch khám sức khỏe nào đang diễn ra.");
+
+            // You might also define a default nurse for parent-submitted results
+            var nurse = await _unitOfWork.SchoolNurseRepository.Query().FirstOrDefaultAsync();
+            if (nurse == null)
+                return ApiResponse<HealthCheckupResultDto>.ErrorResult("Không tìm thấy y tá nào.");
+
+            // Map and manually fill missing fields
+            var entity = _mapper.Map<HealthCheckupResult>(request);
+            entity.CampaignId = campaign.Id;
+            entity.NurseId = nurse.Id;
+
+            await _unitOfWork.HealthCheckupResultRepository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Map to DTO and enrich
+            var dto = _mapper.Map<HealthCheckupResultDto>(entity);
+            dto.StudentName = student.FullName;
+            dto.StudentCode = student.StudentCode;
+            dto.CampaignName = campaign.CampaignName;
+            dto.NurseName = nurse.FullName;
 
             return ApiResponse<HealthCheckupResultDto>.SuccessResult(dto, "Ghi nhận kết quả thành công!");
         }

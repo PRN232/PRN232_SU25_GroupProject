@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PRN232_SU25_GroupProject.Business.Dtos.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.Models.Common;
@@ -20,6 +21,15 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             if (!res.Success) return BadRequest(res);
             return Ok(res);
         }
+
+        [HttpPost("/nurse")]
+        public async Task<IActionResult> CreateByParent([FromBody] RecordCheckupRequestParent request)
+        {
+            var res = await _service.RecordCheckupResultAsync(request);
+            if (!res.Success) return BadRequest(res);
+            return Ok(res);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

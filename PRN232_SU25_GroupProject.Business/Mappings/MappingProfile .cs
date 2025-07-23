@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PRN232_SU25_GroupProject.Business.Dtos.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.DTOs.Authentication;
 using PRN232_SU25_GroupProject.Business.DTOs.HealthCheckups;
 using PRN232_SU25_GroupProject.Business.DTOs.MedicalConsents;
@@ -124,7 +125,7 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             CreateMap<CreateCheckupCampaignRequest, HealthCheckupCampaign>();
             CreateMap<UpdateCheckupCampaignRequest, HealthCheckupCampaign>();
             CreateMap<HealthCheckupCampaign, HealthCheckupCampaignDto>();
-
+            CreateMap<RecordCheckupRequestParent, HealthCheckupResult>();
 
             CreateMap<RecordCheckupRequest, HealthCheckupResult>();
 
