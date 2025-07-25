@@ -33,7 +33,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> Create([FromBody] CreateVaccinationCampaignRequest request)
         {
             var res = await _campaignService.CreateCampaignAsync(request);
@@ -42,7 +42,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateVaccinationCampaignRequest request)
         {
             var res = await _campaignService.UpdateCampaignAsync(id, request);
@@ -51,7 +51,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> Delete(int id)
         {
             var res = await _campaignService.DeleteCampaignAsync(id);
