@@ -14,6 +14,7 @@ namespace PRN232_SU25_GroupProject.Presentation.DependencyInjection
         {
             services.AddAutoMapper(cfg => { cfg.AddProfile<MappingProfile>(); }, typeof(MappingProfile).Assembly);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //RePushMaster
 
 
             ///////////////////////////////////////////////////////
