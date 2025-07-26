@@ -22,10 +22,10 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             return Ok(res);
         }
 
-        [HttpPost("/nurse")]
+        [HttpPost("nurse")]
         public async Task<IActionResult> CreateByParent([FromBody] RecordCheckupRequestParent request)
         {
-            var res = await _service.RecordCheckupResultAsync(request);
+            var res = await _service.RecordCheckupResultParentAsync(request);
             if (!res.Success) return BadRequest(res);
             return Ok(res);
         }
