@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PRN232_SU25_GroupProject.Business.DTOs.MedicalConsents;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
 using PRN232_SU25_GroupProject.DataAccess.Entities;
+using PRN232_SU25_GroupProject.DataAccess.Enums;
 using PRN232_SU25_GroupProject.DataAccess.Models.Common;
 using PRN232_SU25_GroupProject.DataAccess.Repository;
 
@@ -335,5 +336,127 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             await _unitOfWork.SaveChangesAsync();
             return ApiResponse<bool>.SuccessResult(true, "Xóa giấy đồng ý thành công.");
         }
+
+        public async Task<ApiResponse<List<StudentConsentStatusDto>>>
+            GetConsentStatusByCampaignAsync(int campaignId, ConsentType consentType)
+        {
+            // 1. Lấy campaign để đọc TargetGrades
+            string targetGrades;
+            if (consentType == ConsentType.Vaccine)
+            {
+                var vac = await _unitOfWork.VaccinationCampaignRepository.GetByIdAsync(campaignId);
+                if (vac == null) return ApiResponse<List<StudentConsentStatusDto>>.ErrorResult("Không tìm thấy chiến dịch Vaccine.");
+                targetGrades = vac.TargetGrades;
+            }
+            else // HealthCheckup
+            {
+                var hc = await _unitOfWork.HealthCheckupCampaignRepository.GetByIdAsync(campaignId);
+                if (hc == null) return ApiResponse<List<StudentConsentStatusDto>>.ErrorResult("Không tìm thấy chiến dịch HealthCheckup.");
+                targetGrades = hc.TargetGrades;
+            }
+
+            var grades = targetGrades
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(g => g.Trim())
+                .ToList();
+
+            // 2. Lấy tất cả học sinh trong các lớp đó
+            var students = await _unitOfWork.StudentRepository.Query()
+                .Where(s => grades.Contains(s.ClassName))
+                .Include(s => s.Parent)
+                .ToListAsync();
+
+            // 3. Lấy tất cả bản ghi MedicalConsent liên quan
+            var consents = await _unitOfWork.MedicalConsentRepository.Query()
+                .Where(c => c.CampaignId == campaignId && c.ConsentType == consentType)
+                .ToListAsync();
+
+            // 4. Map từng student thành DTO
+            var result = students.Select(s =>
+            {
+                var dto = new StudentConsentStatusDto
+                {
+                    StudentId = s.Id,
+                    StudentName = s.FullName,
+                    ClassName = s.ClassName,
+                    ParentId = s.ParentId,
+                    ParentName = s.Parent?.FullName,
+                    CampaignId = campaignId,
+                    ConsentType = consentType
+                };
+
+                var consent = consents.FirstOrDefault(c => c.StudentId == s.Id);
+                if (consent != null)
+                {
+                    dto.ConsentGiven = consent.ConsentGiven;
+                    dto.ConsentDate = consent.ConsentDate;
+                }
+                else
+                {
+                    dto.ConsentGiven = null;
+                    dto.ConsentDate = null;
+                }
+
+                return dto;
+            }).ToList();
+
+            return ApiResponse<List<StudentConsentStatusDto>>.SuccessResult(result);
+        }
+
+        public async Task<ApiResponse<List<StudentConsentStatusDto>>>
+            GetConsentStatusByCampaignAndClassAsync(int campaignId, ConsentType consentType, string className)
+        {
+            // Tái sử dụng logic trên, chỉ thêm filter className
+            string targetGrades = consentType == ConsentType.Vaccine
+                ? (await _unitOfWork.VaccinationCampaignRepository.GetByIdAsync(campaignId))?.TargetGrades
+                : (await _unitOfWork.HealthCheckupCampaignRepository.GetByIdAsync(campaignId))?.TargetGrades;
+
+            if (targetGrades == null)
+                return ApiResponse<List<StudentConsentStatusDto>>.ErrorResult("Không tìm thấy chiến dịch.");
+
+            var grades = targetGrades
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(g => g.Trim())
+                .ToList();
+
+            if (!grades.Contains(className))
+                return ApiResponse<List<StudentConsentStatusDto>>.ErrorResult($"Lớp {className} không thuộc target grades của chiến dịch.");
+
+            // Lấy học sinh trong lớp
+            var students = await _unitOfWork.StudentRepository.Query()
+                .Where(s => s.ClassName == className)
+                .Include(s => s.Parent)
+                .ToListAsync();
+
+            var consents = await _unitOfWork.MedicalConsentRepository.Query()
+                .Where(c => c.CampaignId == campaignId && c.ConsentType == consentType)
+                .ToListAsync();
+
+            var result = students.Select(s =>
+            {
+                var dto = new StudentConsentStatusDto
+                {
+                    StudentId = s.Id,
+                    StudentName = s.FullName,
+                    ClassName = s.ClassName,
+                    ParentId = s.ParentId,
+                    ParentName = s.Parent?.FullName,
+                    CampaignId = campaignId,
+                    ConsentType = consentType
+                };
+
+                var consent = consents.FirstOrDefault(c => c.StudentId == s.Id);
+                if (consent != null)
+                {
+                    dto.ConsentGiven = consent.ConsentGiven;
+                    dto.ConsentDate = consent.ConsentDate;
+                }
+
+                return dto;
+            }).ToList();
+
+            return ApiResponse<List<StudentConsentStatusDto>>.SuccessResult(result);
+        }
     }
+
 }

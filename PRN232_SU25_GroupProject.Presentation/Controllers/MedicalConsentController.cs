@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PRN232_SU25_GroupProject.Business.DTOs.MedicalConsents;
 using PRN232_SU25_GroupProject.Business.Service.IServices;
+using PRN232_SU25_GroupProject.DataAccess.Enums;
 using System.Security.Claims;
 
 namespace PRN232_SU25_GroupProject.Presentation.Controllers
@@ -192,6 +193,46 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         {
             var res = await _medicalConsentService.DeleteMedicalConsentAsync(id);
             if (!res.Success) return NotFound(res);
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// Lấy trạng thái consent của tất cả học sinh trong các lớp thuộc TargetGrades của chiến dịch.
+        /// </summary>
+        /// <param name="campaignId">ID chiến dịch</param>
+        /// <param name="consentType">Loại consent (Vaccine | HealthCheckup)</param>
+        /// <returns>Danh sách StudentConsentStatusDto</returns>
+        [HttpGet("campaign/{campaignId}/students/status")]
+        [Authorize(Roles = "Manager,Admin")]
+        public async Task<IActionResult> GetConsentStatusByCampaign(
+            int campaignId,
+            [FromQuery] ConsentType consentType)
+        {
+            var res = await _medicalConsentService
+                .GetConsentStatusByCampaignAsync(campaignId, consentType);
+            if (!res.Success)
+                return BadRequest(res);
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// Lấy trạng thái consent của học sinh trong 1 lớp cụ thể thuộc TargetGrades của chiến dịch.
+        /// </summary>
+        /// <param name="campaignId">ID chiến dịch</param>
+        /// <param name="className">Tên lớp</param>
+        /// <param name="consentType">Loại consent (Vaccine | HealthCheckup)</param>
+        /// <returns>Danh sách StudentConsentStatusDto</returns>
+        [HttpGet("campaign/{campaignId}/classes/{className}/students/status")]
+        [Authorize(Roles = "Manager,Admin")]
+        public async Task<IActionResult> GetConsentStatusByCampaignAndClass(
+            int campaignId,
+            string className,
+            [FromQuery] ConsentType consentType)
+        {
+            var res = await _medicalConsentService
+                .GetConsentStatusByCampaignAndClassAsync(campaignId, consentType, className);
+            if (!res.Success)
+                return BadRequest(res);
             return Ok(res);
         }
     }
