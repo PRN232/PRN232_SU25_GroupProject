@@ -30,8 +30,11 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             return Ok(response);
         }
 
-        [HttpGet("class/{className}")]
-        public async Task<IActionResult> GetStudentsByClass(string className)
+        /// <summary>
+        /// Trả về tất cả học sinh trong lớp
+        /// </summary>
+        [HttpGet("classes/{className}/students")]
+        public async Task<IActionResult> GetStudentsInClass(string className)
         {
             var response = await _studentService.GetStudentsByClassAsync(className);
             return Ok(response);
@@ -56,6 +59,15 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         {
             var response = await _studentService.GetAllStudentsAsync();
             if (!response.Success) return NotFound(response);
+            return Ok(response);
+        }
+        /// <summary>
+        /// Trả về danh sách các lớp và số lượng học sinh trong từng lớp
+        /// </summary>
+        [HttpGet("classes")]
+        public async Task<IActionResult> GetClassSummaries()
+        {
+            var response = await _studentService.GetClassSummariesAsync();
             return Ok(response);
         }
     }

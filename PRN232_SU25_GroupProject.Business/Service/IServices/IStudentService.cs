@@ -11,6 +11,12 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<List<StudentDto>>> GetStudentsByParentAsync(int parentId);
         Task<ApiResponse<bool>> UpdateStudentAsync(int id, UpdateStudentRequest request);
         Task<ApiResponse<List<StudentDto>>> GetAllStudentsAsync();
+        /// <summary>
+        /// Lấy danh sách các lớp (chỉ tên lớp) và số lượng học sinh từng lớp
+        /// </summary>
+        Task<ApiResponse<List<ClassSummaryDto>>> GetClassSummariesAsync();
+
+
     }
 
 }

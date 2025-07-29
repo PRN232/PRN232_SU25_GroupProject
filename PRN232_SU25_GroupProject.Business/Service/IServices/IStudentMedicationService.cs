@@ -12,5 +12,9 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<StudentMedicationDto>> ApproveStudentMedicationAsync(int id);
         Task<bool> CanParentAccessMedication(int parentId, int studentId);
         Task<ApiResponse<List<StudentMedicationDto>>> GetAllStudentMedicationsAsync();
+        /// <summary>
+        /// Lấy tất cả đơn thuốc của tất cả học sinh thuộc một phụ huynh
+        /// </summary>
+        Task<ApiResponse<List<StudentMedicationDto>>> GetMedicationsByParentAsync(int parentId);
     }
 }

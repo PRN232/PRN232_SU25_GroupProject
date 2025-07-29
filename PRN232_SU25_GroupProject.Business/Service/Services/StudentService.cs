@@ -107,5 +107,26 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             return ApiResponse<bool>.SuccessResult(true, "Cập nhật học sinh thành công.");
         }
+        public async Task<ApiResponse<List<ClassSummaryDto>>> GetClassSummariesAsync()
+        {
+            var groups = await _unitOfWork.StudentRepository.Query()
+                .GroupBy(s => s.ClassName)
+                .Select(g => new
+                {
+                    ClassName = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            var dtos = groups
+                .Select(g => new ClassSummaryDto
+                {
+                    ClassName = g.ClassName,
+                    StudentCount = g.Count
+                })
+                .ToList();
+
+            return ApiResponse<List<ClassSummaryDto>>.SuccessResult(dtos);
+        }
     }
 }

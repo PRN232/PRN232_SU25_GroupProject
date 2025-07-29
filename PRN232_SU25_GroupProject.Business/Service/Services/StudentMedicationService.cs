@@ -169,5 +169,23 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             return ApiResponse<List<StudentMedicationDto>>.SuccessResult(dtos);
         }
 
+        public async Task<ApiResponse<List<StudentMedicationDto>>> GetMedicationsByParentAsync(int parentId)
+        {
+            // 1. Validate parent tồn tại
+            var parent = await _unitOfWork.ParentRepository.GetByIdAsync(parentId);
+            if (parent == null)
+                return ApiResponse<List<StudentMedicationDto>>.ErrorResult("Không tìm thấy phụ huynh.");
+
+            // 2. Lấy tất cả đơn thuốc mà học sinh có ParentId = parentId
+            var meds = await _unitOfWork.StudentMedicationRepository.Query()
+                .Include(m => m.Student)          // cần Include Student để truy cập Student.ParentId
+                .Where(m => m.Student.ParentId == parentId)
+                .ToListAsync();
+
+            // 3. Ánh xạ về DTO
+            var dtos = _mapper.Map<List<StudentMedicationDto>>(meds);
+            return ApiResponse<List<StudentMedicationDto>>.SuccessResult(dtos);
+        }
+
     }
 }

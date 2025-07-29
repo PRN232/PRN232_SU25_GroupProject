@@ -88,5 +88,22 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             // Luôn trả về 200 OK, kể cả khi danh sách rỗng
             return Ok(result);
         }
+        /// <summary>
+        /// Lấy tất cả đơn thuốc của các học sinh thuộc phụ huynh (parentId)
+        /// </summary>
+        [HttpGet("parent/{parentId}")]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
+        public async Task<IActionResult> GetByParent(int parentId)
+        {
+            // Nếu role = Parent, có thể kiểm tra thêm:
+            //   int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //   // compare currentUserId với parent.UserId nếu cần…
+
+            var result = await _studentMedicationService.GetMedicationsByParentAsync(parentId);
+            if (!result.Success)
+                return NotFound(result);    // hoặc BadRequest tuỳ message
+            return Ok(result);
+        }
+
     }
 }
