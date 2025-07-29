@@ -20,7 +20,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
 
         // Create medication for a student (Manager/Admin can create, Nurse can update)
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager")]  // Chỉ admin và manager có quyền tạo
+        [Authorize(Roles = "Admin, Manager, Parent")]  // Chỉ admin và manager có quyền tạo
         public async Task<IActionResult> Create([FromBody] CreateStudentMedicationRequest request)
         {
             var result = await _studentMedicationService.CreateStudentMedicationAsync(request);
@@ -51,9 +51,12 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             // Parent should only be able to access medications of their children
-            if (userRole == "Parent" && await _studentMedicationService.CanParentAccessMedication(currentUserId, studentId))
+            if (userRole == "Parent")
             {
-                return Unauthorized("Bạn không có quyền truy cập thông tin này.");
+                if (!await _studentMedicationService.CanParentAccessMedication(currentUserId, studentId))
+                {
+                    return Unauthorized("Bạn không có quyền truy cập thông tin này.");
+                }
             }
 
             var result = await _studentMedicationService.GetMedicationsByStudentAsync(studentId);
