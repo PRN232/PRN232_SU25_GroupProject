@@ -77,5 +77,16 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
 
             return Ok(result); // 200 OK if successful
         }
+        /// <summary>
+        /// Lấy toàn bộ danh sách đơn thuốc (Admin, Manager, SchoolNurse)
+        /// </summary>
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager, SchoolNurse")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _studentMedicationService.GetAllStudentMedicationsAsync();
+            // Luôn trả về 200 OK, kể cả khi danh sách rỗng
+            return Ok(result);
+        }
     }
 }

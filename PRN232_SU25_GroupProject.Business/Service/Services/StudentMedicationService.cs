@@ -157,6 +157,17 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             // Check if the parentId matches the student's ParentId.
             return student.ParentId == parentId;
         }
+        public async Task<ApiResponse<List<StudentMedicationDto>>> GetAllStudentMedicationsAsync()
+        {
+            // Lấy tất cả đơn thuốc
+            var medications = await _unitOfWork.StudentMedicationRepository.Query()
+                .ToListAsync();
+
+            // Ánh xạ về DTO
+            var dtos = _mapper.Map<List<StudentMedicationDto>>(medications);
+
+            return ApiResponse<List<StudentMedicationDto>>.SuccessResult(dtos);
+        }
 
     }
 }
