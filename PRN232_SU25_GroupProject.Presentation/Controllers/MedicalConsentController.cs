@@ -203,7 +203,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// <param name="consentType">Loại consent (Vaccine | HealthCheckup)</param>
         /// <returns>Danh sách StudentConsentStatusDto</returns>
         [HttpGet("campaign/{campaignId}/students/status")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize]
         public async Task<IActionResult> GetConsentStatusByCampaign(
             int campaignId,
             [FromQuery] ConsentType consentType)
@@ -223,7 +223,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// <param name="consentType">Loại consent (Vaccine | HealthCheckup)</param>
         /// <returns>Danh sách StudentConsentStatusDto</returns>
         [HttpGet("campaign/{campaignId}/classes/{className}/students/status")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize]
         public async Task<IActionResult> GetConsentStatusByCampaignAndClass(
             int campaignId,
             string className,
