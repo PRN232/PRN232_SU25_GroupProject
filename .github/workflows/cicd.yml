@@ -60,7 +60,7 @@ jobs:
 
       - name: Connect, Pull, and Build Docker
         run: |
-          ssh huyhoang204205@115.73.218.193 << EOF
+          ssh -t huyhoang204205@115.73.218.193 << EOF
             set -e
             cd /home/huyhoang204205/Documents/prn232
             echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose pull prn232_backend
