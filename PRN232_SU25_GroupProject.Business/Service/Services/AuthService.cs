@@ -161,17 +161,34 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             expiresAt = DateTime.Now.AddHours(20);
 
-            var claims = new[]
-            {
+            // Khởi tạo danh sách claim mặc định
+            var claims = new List<Claim>
+    {
         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(ClaimTypes.Role, user.Role.ToString()),
         new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim("uid", user.Id.ToString())
+        new Claim(ClaimTypes.Role, user.Role.ToString()),
+        new Claim("UserId", user.Id.ToString())
     };
 
-            Console.WriteLine($"issuer: {issuer}");
-            Console.WriteLine($"audience: {audience}");
-            Console.WriteLine($"keyD: {secretKey}");
+            // Gán thêm claim theo Role
+            if (user.Role == UserRole.Parent)
+            {
+                var parentRepo = _unitOfWork.GetRepository<Parent>();
+                var parent = parentRepo.Query().FirstOrDefault(p => p.UserId == user.Id);
+                if (parent != null)
+                {
+                    claims.Add(new Claim("ParentId", parent.Id.ToString()));
+                }
+            }
+            else if (user.Role == UserRole.SchoolNurse)
+            {
+                var nurseRepo = _unitOfWork.GetRepository<SchoolNurse>();
+                var nurse = nurseRepo.Query().FirstOrDefault(n => n.UserId == user.Id);
+                if (nurse != null)
+                {
+                    claims.Add(new Claim("NurseId", nurse.Id.ToString()));
+                }
+            }
 
             var token = new JwtSecurityToken(
                 issuer: issuer,
@@ -182,6 +199,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
 
         private async Task<UserDto> BuildUserDtoAsync(User user)
