@@ -296,9 +296,9 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             var student = await _unitOfWork.StudentRepository.GetByIdAsync(consent.StudentId);
             if (student == null)
                 return ApiResponse<MedicalConsentDto>.ErrorResult("Không tìm thấy học sinh liên quan.");
-            var parrentid = await _unitOfWork.ParentRepository.FindAsync(p => p.Id == student.ParentId);
+            var parrent = await _unitOfWork.ParentRepository.FindAsync(p => p.UserId == currentUserId);
             // Check if the current user is the parent of the student
-            if (student.ParentId != parrentid.UserId)
+            if (student.ParentId != parrent.Id)
                 return ApiResponse<MedicalConsentDto>.ErrorResult("Bạn không có quyền sửa đổi giấy đồng ý này.");
 
             // Update consent details
