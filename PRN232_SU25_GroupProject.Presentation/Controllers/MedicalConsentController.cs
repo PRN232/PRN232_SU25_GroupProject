@@ -65,7 +65,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// GET /api/medical-consents/campaign/3
         /// </remarks>
         [HttpGet("campaign/{campaignId}")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> GetConsentsByCampaign(int campaignId)
         {
             var res = await _medicalConsentService.GetConsentsByCampaignAsync(campaignId);
@@ -100,7 +100,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// </code>
         /// </returns>
         [HttpGet("{id}")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> GetById(int id)
         {
             var res = await _medicalConsentService.GetConsentByIdAsync(id);
@@ -124,7 +124,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// </code>
         /// </remarks>
         [HttpPost]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> Create([FromBody] CreateMedicalConsentRequest request)
         {
             var res = await _medicalConsentService.CreateMedicalConsentAsync(request);
@@ -147,7 +147,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// </code>
         /// </remarks>
         [HttpPost("class")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> CreateForClass([FromBody] CreateMedicalConsentClassRequest request)
         {
             var res = await _medicalConsentService.CreateMedicalConsentForClassAsync(request);
@@ -188,7 +188,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         /// DELETE /api/medical-consents/15
         /// </remarks>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Manager,Admin")]
+        [Authorize(Roles = "Manager,Admin,SchoolNurse")]
         public async Task<IActionResult> Delete(int id)
         {
             var res = await _medicalConsentService.DeleteMedicalConsentAsync(id);
