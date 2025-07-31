@@ -64,8 +64,8 @@ builder.Services.AddSwaggerGen(c =>
         Contact = new OpenApiContact
         {
             Name = "SMMS Development Team",
-            Email = "support@smms.edu.vn",
-            Url = new Uri("https://smms.edu.vn")
+            Email = "Quanghuy01062004@gmail.com",
+            Url = new Uri("https://schoolmedical.hyudequeue.xyz")
         },
         License = new OpenApiLicense
         {
