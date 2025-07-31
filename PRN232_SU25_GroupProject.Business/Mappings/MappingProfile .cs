@@ -28,16 +28,14 @@ namespace PRN232_SU25_GroupProject.Business.Mappings
             ////////////////////////////////////////////////////
             ///             USER & AUTH MAPPING              ///
             ////////////////////////////////////////////////////
-            CreateMap<Parent, UserDto>()
-    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) // Id của Parent
-    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
-    .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName))
-    .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
-    .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.User.Role))
-    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.User.IsActive))
-    .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.User.CreatedAt))
-    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber)); // từ bảng Parent
-
+            CreateMap<User, UserDto>()
+    .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.UserName))
+    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber));
+            CreateMap<CreateUserRequest, User>();
+            CreateMap<UpdateUserRequest, User>();
+            CreateMap<LoginRequest, User>().ReverseMap();
+            CreateMap<LoginResult, UserDto>().ReverseMap();
 
             ////////////////////////////////////////////////////
             ///              STUDENT & PARENT                ///
