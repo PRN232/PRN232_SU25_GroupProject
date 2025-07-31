@@ -13,7 +13,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.IServices
         Task<ApiResponse<MedicalConsentDto>> CreateMedicalConsentAsync(CreateMedicalConsentRequest request);
         Task<ApiResponse<List<MedicalConsentDto>>> CreateMedicalConsentForClassAsync(CreateMedicalConsentClassRequest request);
 
-        Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int currentUserId);
+        Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int parentId);
         Task<ApiResponse<bool>> DeleteMedicalConsentAsync(int id);
         /// <summary>
         /// Lấy danh sách các học sinh trong tất cả các lớp thuộc TargetGrades của chiến dịch,

@@ -286,7 +286,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
 
         // UPDATE
-        public async Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int currentUserId)
+        public async Task<ApiResponse<MedicalConsentDto>> UpdateMedicalConsentAsync(int id, UpdateMedicalConsentRequest request, int parentId)
         {
             var consent = await _unitOfWork.MedicalConsentRepository.GetByIdAsync(id);
             if (consent == null)
@@ -296,7 +296,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
             var student = await _unitOfWork.StudentRepository.GetByIdAsync(consent.StudentId);
             if (student == null)
                 return ApiResponse<MedicalConsentDto>.ErrorResult("Không tìm thấy học sinh liên quan.");
-            var parrent = await _unitOfWork.ParentRepository.FindAsync(p => p.UserId == currentUserId);
+            var parrent = await _unitOfWork.ParentRepository.FindAsync(p => p.Id == parentId);
             // Check if the current user is the parent of the student
             if (student.ParentId != parrent.Id)
                 return ApiResponse<MedicalConsentDto>.ErrorResult("Bạn không có quyền sửa đổi giấy đồng ý này.");
