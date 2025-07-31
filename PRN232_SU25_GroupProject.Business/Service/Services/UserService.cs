@@ -56,8 +56,35 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 .Where(u => u.Role == role)
                 .ToListAsync();
 
-            return _mapper.Map<List<UserDto>>(users);
+            var userDtos = new List<UserDto>();
+
+            foreach (var user in users)
+            {
+                var dto = _mapper.Map<UserDto>(user);
+
+                switch (role)
+                {
+                    case UserRole.Parent:
+                        var parent = await _unitOfWork.ParentRepository
+                            .Query().FirstOrDefaultAsync(p => p.UserId == user.Id);
+                        if (parent != null)
+                            dto.UserId = parent.Id;
+                        break;
+
+                    case UserRole.SchoolNurse:
+                        var nurse = await _unitOfWork.SchoolNurseRepository
+                            .Query().FirstOrDefaultAsync(n => n.UserId == user.Id);
+                        if (nurse != null)
+                            dto.UserId = nurse.Id;
+                        break;
+                }
+
+                userDtos.Add(dto);
+            }
+
+            return userDtos;
         }
+
 
         public async Task<bool> UpdateUserAsync(UpdateUserRequest request)
         {
