@@ -1,4 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
+﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
+using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
 
 namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
 {
@@ -21,7 +22,7 @@ namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
         [SwaggerSchemaExample("2025-11-07T15:52:18.960Z")]
         public DateTime EndDate { get; set; } // Ngày kết thúc sử dụng thuốc
         [SwaggerSchemaExample("true")]
-        public bool IsApproved { get; set; } // Tình trạng duyệt thuốc (Phê duyệt bởi y tá)
+        public MedicationApprovalStatus IsApproved { get; set; } // Tình trạng duyệt thuốc (Phê duyệt bởi y tá)
 
     }
 }

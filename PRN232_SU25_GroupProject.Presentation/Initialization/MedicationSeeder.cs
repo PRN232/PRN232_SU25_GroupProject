@@ -39,7 +39,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     AdministrationTime = new TimeSpan(8, 0, 0),
                     StartDate = DateTime.Today,
                     EndDate = DateTime.Today.AddDays(30),
-                    IsApproved = true
+                    IsApproved = DataAccess.Enums.MedicationApprovalStatus.Approved,
                 },
                 new StudentMedication
                 {
@@ -50,7 +50,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Initialization
                     AdministrationTime = new TimeSpan(0, 0, 0),
                     StartDate = DateTime.Today,
                     EndDate = DateTime.Today.AddMonths(6),
-                    IsApproved = true
+                    IsApproved = DataAccess.Enums.MedicationApprovalStatus.Approved
                 }
             );
             context.SaveChanges();

@@ -38,7 +38,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 TotalIncidentsThisWeek = await _unitOfWork.MedicalIncidentRepository
                     .Query().CountAsync(i => i.IncidentDate >= weekStart),
                 PendingMedicationApprovals = await _unitOfWork.StudentMedicationRepository
-                    .Query().CountAsync(m => !m.IsApproved),
+                    .Query().CountAsync(m => m.IsApproved == MedicationApprovalStatus.Approved),
                 ActiveVaccinationCampaigns = await _unitOfWork.VaccinationCampaignRepository
                     .Query().CountAsync(c => c.ScheduledDate >= today),
                 ActiveCheckupCampaigns = await _unitOfWork.HealthCheckupCampaignRepository

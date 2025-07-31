@@ -1,4 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
+﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
+using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
 
 namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
 {
@@ -7,6 +8,6 @@ namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
         [SwaggerSchemaExample("3")]
         public int MedicationId { get; set; }
         [SwaggerSchemaExample("true")]
-        public bool IsApproved { get; set; }
+        public MedicationApprovalStatus IsApproved { get; set; }
     }
 }

@@ -174,11 +174,20 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         [Authorize(Roles = "Parent")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateMedicalConsentRequest request)
         {
-            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var res = await _medicalConsentService.UpdateMedicalConsentAsync(id, request, currentUserId);
-            if (!res.Success) return NotFound(res);
+            var parentIdClaim = User.FindFirst("ParentId");
+
+            if (parentIdClaim == null || !int.TryParse(parentIdClaim.Value, out int parentId))
+            {
+                return Forbid("Không xác định được danh tính phụ huynh. Token thiếu hoặc sai ParentId.");
+            }
+
+            var res = await _medicalConsentService.UpdateMedicalConsentAsync(id, request, parentId);
+            if (!res.Success)
+                return NotFound(res);
+
             return Ok(res);
         }
+
 
         /// <summary>
         /// Xóa giấy đồng ý (Manager/Admin)

@@ -121,6 +121,10 @@ namespace PRN232_SU25_GroupProject.DataAccess.Context
                 .HasForeignKey(sm => sm.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<StudentMedication>()
+                .Property(sm => sm.IsApproved)
+                .HasConversion<string>();
+
             // Vaccination relationships
             modelBuilder.Entity<MedicalConsent>(entity =>
             {

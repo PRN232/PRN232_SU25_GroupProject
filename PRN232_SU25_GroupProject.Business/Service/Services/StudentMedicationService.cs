@@ -41,7 +41,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
 
             // Create the medication record
             var medication = _mapper.Map<StudentMedication>(request);
-            medication.IsApproved = false; // By default, the medication will not be approved
+            medication.IsApproved = DataAccess.Enums.MedicationApprovalStatus.Pending;
             await _unitOfWork.StudentMedicationRepository.AddAsync(medication);
             await _unitOfWork.SaveChangesAsync();
 
@@ -134,7 +134,7 @@ namespace PRN232_SU25_GroupProject.Business.Service.Services
                 return ApiResponse<StudentMedicationDto>.ErrorResult("Không tìm thấy đơn thuốc.");
 
             // Approve the medication
-            medication.IsApproved = true;
+            medication.IsApproved = DataAccess.Enums.MedicationApprovalStatus.Approved;
             _unitOfWork.StudentMedicationRepository.Update(medication);
             await _unitOfWork.SaveChangesAsync();
 

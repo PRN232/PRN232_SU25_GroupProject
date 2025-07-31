@@ -1,4 +1,6 @@
-﻿namespace PRN232_SU25_GroupProject.DataAccess.Entities
+﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
+
+namespace PRN232_SU25_GroupProject.DataAccess.Entities
 {
     public class StudentMedication
     {
@@ -11,6 +13,6 @@
         public TimeSpan AdministrationTime { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public bool IsApproved { get; set; }
+        public MedicationApprovalStatus IsApproved { get; set; }
     }
 }

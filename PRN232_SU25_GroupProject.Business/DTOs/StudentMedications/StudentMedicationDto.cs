@@ -1,4 +1,5 @@
-﻿using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
+﻿using PRN232_SU25_GroupProject.DataAccess.Enums;
+using PRN232_SU25_GroupProject.DataAccess.SwaggerSchema;
 
 namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
 {
@@ -23,7 +24,7 @@ namespace PRN232_SU25_GroupProject.Business.DTOs.StudentMedications
         [SwaggerSchemaExample("2025-11-07T15:52:18.960Z")]
         public DateTime EndDate { get; set; }
         [SwaggerSchemaExample("false")]
-        public bool IsApproved { get; set; }
+        public MedicationApprovalStatus IsApproved { get; set; }
         [SwaggerSchemaExample("true")]
         public bool IsActive => DateTime.Now >= StartDate && DateTime.Now <= EndDate;
     }
