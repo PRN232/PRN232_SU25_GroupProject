@@ -17,12 +17,11 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         /// <summary>
-        /// Create a new user.
+        /// Tạo người dùng mới.
         /// </summary>
-        /// <param name="request">Request payload.</param>
-        /// <returns>The created user.</returns>
+        /// <param name="request">Dữ liệu yêu cầu.</param>
+        /// <returns>Người dùng đã được tạo.</returns>
         [HttpPost]
-
         public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -39,7 +38,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         /// <summary>
-        /// Get a user by id.
+        /// Lấy thông tin người dùng theo ID.
         /// </summary>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserDto>> GetById(int id)
@@ -49,25 +48,25 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         /// <summary>
-        /// Get users by role.
+        /// Lấy danh sách người dùng theo vai trò.
         /// </summary>
         [HttpGet("roles/{role}")]
         public async Task<ActionResult<List<UserDto>>> GetByRole(string role)
         {
             if (!Enum.TryParse<UserRole>(role, true, out var userRole))
-                return BadRequest("Invalid role.");
+                return BadRequest("Vai trò không hợp lệ.");
 
             var users = await _userService.GetUsersByRoleAsync(userRole);
             return Ok(users);
         }
 
         /// <summary>
-        /// Update an existing user.
+        /// Cập nhật thông tin người dùng.
         /// </summary>
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
         {
-            if (id != request.Id) return BadRequest("Id mismatch.");
+            if (id != request.Id) return BadRequest("Id không khớp.");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var updated = await _userService.UpdateUserAsync(request);
@@ -75,7 +74,7 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         /// <summary>
-        /// Deactivate (soft delete) a user.
+        /// Vô hiệu hóa (xóa mềm) người dùng.
         /// </summary>
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Deactivate(int id)

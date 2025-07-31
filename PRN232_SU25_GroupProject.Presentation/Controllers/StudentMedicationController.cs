@@ -18,39 +18,42 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
             _studentMedicationService = studentMedicationService;
         }
 
-        // Create medication for a student (Manager/Admin can create, Nurse can update)
+        /// <summary>
+        /// Tạo đơn thuốc mới cho học sinh. (Chỉ Admin, Manager và Phụ huynh được phép tạo)
+        /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Admin, Manager, Parent")]  // Chỉ admin và manager có quyền tạo
+        [Authorize(Roles = "Admin, Manager, Parent")]
         public async Task<IActionResult> Create([FromBody] CreateStudentMedicationRequest request)
         {
             var result = await _studentMedicationService.CreateStudentMedicationAsync(request);
             if (!result.Success)
-                return BadRequest(result); // 400 Bad Request if error occurs
-
-            return Ok(result); // 200 OK if successful
+                return BadRequest(result);
+            return Ok(result);
         }
 
-        // Update medication for a student (Only Admin and Nurse can update)
+        /// <summary>
+        /// Cập nhật đơn thuốc của học sinh. (Chỉ Admin và y tá trường có quyền cập nhật)
+        /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, SchoolNurse")]  // Chỉ Admin và SchoolNurse có quyền cập nhật
+        [Authorize(Roles = "Admin, SchoolNurse")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStudentMedicationRequest request)
         {
             var result = await _studentMedicationService.UpdateStudentMedicationAsync(id, request);
             if (!result.Success)
-                return NotFound(result); // 404 Not Found if medication not found
-
-            return Ok(result); // 200 OK if update is successful
+                return NotFound(result);
+            return Ok(result);
         }
 
-        // Get medications by student (Parent can see only their children's medications)
+        /// <summary>
+        /// Lấy danh sách đơn thuốc theo mã học sinh. (Phụ huynh chỉ được xem đơn thuốc của con mình)
+        /// </summary>
         [HttpGet("student/{studentId}")]
-        [Authorize]  // All authenticated users can access
+        [Authorize]
         public async Task<IActionResult> GetMedicationsByStudent(int studentId)
         {
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value; // Check user's role
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            // Parent should only be able to access medications of their children
             if (userRole == "Parent")
             {
                 if (!await _studentMedicationService.CanParentAccessMedication(currentUserId, studentId))
@@ -61,49 +64,45 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
 
             var result = await _studentMedicationService.GetMedicationsByStudentAsync(studentId);
             if (!result.Success)
-                return NotFound(result); // 404 Not Found if no medications found
-
-            return Ok(result); // 200 OK if medications found
+                return NotFound(result);
+            return Ok(result);
         }
 
-        // Delete medication for a student (Only Admin can delete)
+        /// <summary>
+        /// Xóa đơn thuốc theo mã. (Chỉ Admin được phép xóa)
+        /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]  // Only Admin can delete medications
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _studentMedicationService.DeleteStudentMedicationAsync(id);
             if (!result.Success)
-                return NotFound(result); // 404 Not Found if medication not found
-
-            return Ok(result); // 200 OK if successful
+                return NotFound(result);
+            return Ok(result);
         }
+
         /// <summary>
-        /// Lấy toàn bộ danh sách đơn thuốc (Admin, Manager, SchoolNurse)
+        /// Lấy toàn bộ danh sách đơn thuốc. (Chỉ Admin, Manager, SchoolNurse)
         /// </summary>
         [HttpGet]
         [Authorize(Roles = "Admin, Manager, SchoolNurse")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _studentMedicationService.GetAllStudentMedicationsAsync();
-            // Luôn trả về 200 OK, kể cả khi danh sách rỗng
             return Ok(result);
         }
+
         /// <summary>
-        /// Lấy tất cả đơn thuốc của các học sinh thuộc phụ huynh (parentId)
+        /// Lấy tất cả đơn thuốc của các học sinh có phụ huynh là người dùng chỉ định. (Admin, Manager, Nurse và chính phụ huynh)
         /// </summary>
         [HttpGet("parent/{parentId}")]
         [Authorize(Roles = "Admin, Manager, SchoolNurse, Parent")]
         public async Task<IActionResult> GetByParent(int parentId)
         {
-            // Nếu role = Parent, có thể kiểm tra thêm:
-            //   int currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            //   // compare currentUserId với parent.UserId nếu cần…
-
             var result = await _studentMedicationService.GetMedicationsByParentAsync(parentId);
             if (!result.Success)
-                return NotFound(result);    // hoặc BadRequest tuỳ message
+                return NotFound(result);
             return Ok(result);
         }
-
     }
 }

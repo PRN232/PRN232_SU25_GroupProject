@@ -18,6 +18,10 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         // GET: api/medications
+        /// <summary>
+        /// Lấy danh sách tất cả thuốc trong hệ thống.
+        /// </summary>
+        /// <returns>Danh sách thuốc.</returns>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAll()
@@ -30,6 +34,11 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         // GET: api/medications/{id}
+        /// <summary>
+        /// Lấy thông tin chi tiết của một thuốc theo ID.
+        /// </summary>
+        /// <param name="id">ID của thuốc.</param>
+        /// <returns>Thông tin chi tiết của thuốc.</returns>
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(int id)
@@ -42,6 +51,11 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         // POST: api/medications
+        /// <summary>
+        /// Thêm thuốc mới vào hệ thống.
+        /// </summary>
+        /// <param name="request">Thông tin thuốc cần thêm.</param>
+        /// <returns>Thông tin thuốc sau khi thêm.</returns>
         [HttpPost]
         [Authorize(Roles = "Admin, Manager, SchoolNurse")]
         public async Task<IActionResult> Create([FromBody] AddMedicationRequest request)
@@ -54,6 +68,12 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         // PUT: api/medications/{id}
+        /// <summary>
+        /// Cập nhật thông tin thuốc.
+        /// </summary>
+        /// <param name="id">ID của thuốc cần cập nhật.</param>
+        /// <param name="request">Dữ liệu cập nhật.</param>
+        /// <returns>Thông tin thuốc sau khi cập nhật.</returns>
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Manager, SchoolNurse")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateMedicationRequest request)
@@ -66,6 +86,11 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
         }
 
         // DELETE: api/medications/{id}
+        /// <summary>
+        /// Xóa thuốc khỏi hệ thống.
+        /// </summary>
+        /// <param name="id">ID của thuốc cần xóa.</param>
+        /// <returns>Kết quả xóa thuốc.</returns>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Manager, SchoolNurse")]
         public async Task<IActionResult> Delete(int id)
@@ -76,5 +101,6 @@ namespace PRN232_SU25_GroupProject.Presentation.Controllers
 
             return NoContent();
         }
+
     }
 }
