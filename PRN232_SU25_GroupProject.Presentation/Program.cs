@@ -56,17 +56,39 @@ builder.Services.AddHttpContextAccessor();
 // === Swagger ===
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SMMS API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "School Medical Management System API",
+        Version = "v1",
+        Description = "Hệ thống quản lý y tế học đường (SMMS API) cho phép theo dõi thông tin sức khỏe học sinh, đơn thuốc, hồ sơ y tế, và xử lý các yêu cầu liên quan đến phụ huynh, y tá, quản lý và admin.",
+        Contact = new OpenApiContact
+        {
+            Name = "SMMS Development Team",
+            Email = "support@smms.edu.vn",
+            Url = new Uri("https://smms.edu.vn")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensource.org/licenses/MIT")
+        }
+    });
+
     c.EnableAnnotations();
     c.SchemaFilter<SwaggerSchemaExampleFilter>();
+
+    // Cấu hình bảo mật với JWT Bearer Token
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme.",
+        Description = @"JWT Authorization header. 
+Nhập token vào trường sau (ví dụ: Bearer {token}). 
+Token được lấy sau khi đăng nhập thành công.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -78,13 +100,16 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
+
+    // Bao gồm XML comment cho Swagger từ file tài liệu XML sinh ra từ /// summary
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
     c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 });
+
 
 // === JWT Authentication ===
 builder.Services.AddAuthentication(options =>
